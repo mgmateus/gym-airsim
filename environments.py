@@ -20,8 +20,19 @@ from .airsim_resources.noetic import QuarotorStereoROS
 
 
 class EnvironmentROS(Env):
-    def __init__(self, ip : str, vehicle_name : str, camera_name : str, observation : str):
-        self.vehicle = QuarotorStereoROS(ip, vehicle_name, camera_name, observation)
+    def __init__(self, ip : str, 
+                 vehicle_name : str, 
+                 camera_name : str, 
+                 observation : str,
+                 vertices_path : str, 
+                 vertices_name : str):
+        
+        self.vehicle = QuarotorStereoROS(ip, 
+                                         vehicle_name, 
+                                         camera_name, 
+                                         observation, 
+                                         vertices_path, 
+                                         vertices_name)
         
     def step(self, action):
         state = self.vehicle.get_state(action)
