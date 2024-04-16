@@ -16,7 +16,6 @@ from .airsim_resources.ros_api import Position, Trajectory
 
 class LoggerFiles:
     def __init__(self, files_path : str) -> None:
-        self.__files_path = files_path
         self.__dataset_path = files_path + '/dataset'
         self.__count_name = 0
         
@@ -46,41 +45,41 @@ class LoggerFiles:
         
         
 
-class EnvironmentPositionNBV(Env, LoggerFiles):
+class EnvironmentPositionNBV(Env):
     def __init__(self, ip : str, 
                  vehicle_name : str, 
                  camera_name : str, 
                  observation_type : str,
-                 files_path : str, 
                  space_observation_dim : int, 
                  space_action_dim : int,
                  max_steps : int):
-        LoggerFiles.__init__(self, files_path)
+        
         
         self.observation_space = np.zeros(shape=(space_observation_dim,))
         self.action_space = np.zeros(shape=(space_action_dim,))
         self.n_steps = 0
         self.max_steps = max_steps
+        self.ep = 0
         
         self.vehicle = Position(ip, vehicle_name, camera_name, observation_type)
         
         self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
         
-    def _store(self):
-        if not self.vehicle.past_position or dist(self.vehicle.position, self.vehicle.past_position) > 0:
-            views = self.vehicle.get_views()
-            self.store_views(views)
-            self.vehicle.past_position = self.vehicle.position
+    # def _store(self):
+    #     if not self.vehicle.past_position or dist(self.vehicle.position, self.vehicle.past_position) > 0:
+    #         views = self.vehicle.get_views()
+    #         self.store_views(views)
+    #         self.vehicle.past_position = self.vehicle.position
 
            
         
     def step(self, action):
         state = self.vehicle.get_state(action)
-        self._store()
         return state
     
     def reset(self, curr_ep : int):
-        self.mkdir_dataset_path(curr_ep, self.views)
+        self.ep = curr_ep
+        # self.mkdir_dataset_path(curr_ep, self.views)
         
         return self.observation_space
     
