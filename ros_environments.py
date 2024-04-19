@@ -1,17 +1,17 @@
 import rospy
 import cv2
 import os
-
+import yaml
+import importlib
 
 import numpy as np
 
 from math import dist
 from numpy.typing import NDArray
 from typing import List, Tuple
-
 from gym import Env, spaces
 
-from .airsim_resources.ros_api import Position, Trajectory
+airsim_helper = importlib.import_module('airsim-helper')
 
 
 class LoggerFiles:
@@ -45,7 +45,7 @@ class LoggerFiles:
         
         
 
-class EnvironmentPositionNBV(Env):
+class PositionNBV(Env):
     def __init__(self, ip : str, 
                  vehicle_name : str, 
                  camera_name : str, 
@@ -53,7 +53,8 @@ class EnvironmentPositionNBV(Env):
                  space_observation_dim : int, 
                  space_action_dim : int,
                  max_steps : int):
-        
+
+        rospy.init_node('gym')
         
         self.observation_space = np.zeros(shape=(space_observation_dim,))
         self.action_space = np.zeros(shape=(space_action_dim,))
@@ -61,7 +62,7 @@ class EnvironmentPositionNBV(Env):
         self.max_steps = max_steps
         self.ep = 0
         
-        self.vehicle = Position(ip, vehicle_name, camera_name, observation_type)
+        self.vehicle = airsim_helper.Position(ip, vehicle_name, camera_name, observation_type)
         
         self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
         
@@ -83,7 +84,7 @@ class EnvironmentPositionNBV(Env):
         
         return self.observation_space
     
-class EnvironmentTrajectoryNBV(Env, LoggerFiles):
+class TrajectoryNBV(Env, LoggerFiles):
     def __init__(self, ip : str, 
                  vehicle_name : str, 
                  camera_name : str, 
@@ -99,7 +100,7 @@ class EnvironmentTrajectoryNBV(Env, LoggerFiles):
         self.n_steps = 0
         self.max_steps = max_steps
         
-        self.vehicle = Trajectory(ip, vehicle_name, camera_name, observation_type)
+        self.vehicle = airsim_helper.Trajectory(ip, vehicle_name, camera_name, observation_type)
         
         self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
         
@@ -121,3 +122,5 @@ class EnvironmentTrajectoryNBV(Env, LoggerFiles):
         
         return self.observation_space
 
+
+# if __name__ == '__main__':

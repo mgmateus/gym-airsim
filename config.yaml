@@ -1,0 +1,4 @@
+settings:
+    docker_container: 'ue4' #if "" run localhost
+    ip: '' 
+    airsim_launch_path_file: '/home/airsim/AirSim/ros/src/airsim_ros_pkgs/launch/airsim_node.launch' 
