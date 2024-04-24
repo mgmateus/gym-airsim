@@ -1,4 +1,22 @@
 settings:
-    docker_container: 'ue4' #if "" run localhost
-    ip: '' 
+    docker_container: 'ue4'
     airsim_launch_path_file: '/home/airsim/AirSim/ros/src/airsim_ros_pkgs/launch/airsim_node.launch' 
+
+envs:
+    - domain: 'aereo'
+        observation: 'stereo'
+        x_action_range:
+            min: -60
+            max: 60
+        y_action_range:
+            min: -155
+            max: 155
+        z_action_range:
+            min: -60
+            max: 60
+        yaw_action_range:
+            min: -45
+            max: 45
+        pitch_action_range:
+            min: -45
+            max: 45

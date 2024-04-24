@@ -2,7 +2,7 @@ import rospy
 import cv2
 import os
 import yaml
-import importlib
+import sys
 
 import numpy as np
 
@@ -11,8 +11,9 @@ from numpy.typing import NDArray
 from typing import List, Tuple
 from gym import Env, spaces
 
-airsim_helper = importlib.import_module('airsim-helper')
 
+sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
+from ros_api import Position, Trajectory
 
 class LoggerFiles:
     def __init__(self, files_path : str) -> None:
@@ -42,37 +43,29 @@ class LoggerFiles:
             
         self.__count_name += 1
         
-        
-        
 
 class PositionNBV(Env):
     def __init__(self, ip : str, 
                  vehicle_name : str, 
                  camera_name : str, 
+                 domain : str,
                  observation_type : str,
                  space_observation_dim : int, 
                  space_action_dim : int,
                  max_steps : int):
 
-        rospy.init_node('gym')
+        rospy.init_node(f'gym-{vehicle_name}-{domain}-{observation_type}')
         
-        self.observation_space = np.zeros(shape=(space_observation_dim,))
-        self.action_space = np.zeros(shape=(space_action_dim,))
+        self.observation_space = np.zeros(shape=(space_observation_dim,)) #mudar tipo gym nativo
+        self.action_space = np.zeros(shape=(space_action_dim,))  #mudar tipo para gym nativo
         self.n_steps = 0
         self.max_steps = max_steps
         self.ep = 0
         
-        self.vehicle = airsim_helper.Position(ip, vehicle_name, camera_name, observation_type)
+        self.vehicle = Position(ip, vehicle_name, camera_name, observation_type)
         
         self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
         
-    # def _store(self):
-    #     if not self.vehicle.past_position or dist(self.vehicle.position, self.vehicle.past_position) > 0:
-    #         views = self.vehicle.get_views()
-    #         self.store_views(views)
-    #         self.vehicle.past_position = self.vehicle.position
-
-           
         
     def step(self, action):
         state = self.vehicle.get_state(action)
@@ -80,47 +73,6 @@ class PositionNBV(Env):
     
     def reset(self, curr_ep : int):
         self.ep = curr_ep
-        # self.mkdir_dataset_path(curr_ep, self.views)
         
         return self.observation_space
     
-class TrajectoryNBV(Env, LoggerFiles):
-    def __init__(self, ip : str, 
-                 vehicle_name : str, 
-                 camera_name : str, 
-                 observation_type : str,
-                 files_path : str, 
-                 space_observation_dim : int, 
-                 space_action_dim : int,
-                 max_steps : int):
-        LoggerFiles.__init__(self, files_path)
-        
-        self.observation_space = np.zeros(shape=(space_observation_dim,))
-        self.action_space = np.zeros(shape=(space_action_dim,))
-        self.n_steps = 0
-        self.max_steps = max_steps
-        
-        self.vehicle = airsim_helper.Trajectory(ip, vehicle_name, camera_name, observation_type)
-        
-        self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
-        
-    def _store(self):
-        if not self.vehicle.past_position or dist(self.vehicle.position, self.vehicle.past_position) > 0:
-            views = self.vehicle.get_views()
-            self.store_views(views)
-            self.vehicle.past_position = self.vehicle.position
-
-           
-        
-    def step(self, action):
-        state = self.vehicle.get_state(action)
-        self._store()
-        return state
-    
-    def reset(self, curr_ep : int):
-        self.mkdir_dataset_path(curr_ep, self.views)
-        
-        return self.observation_space
-
-
-# if __name__ == '__main__':
