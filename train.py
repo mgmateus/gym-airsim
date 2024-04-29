@@ -17,5 +17,5 @@ from libtmux.constants import PaneDirection
 # server.attach_session(target_session="session_test")
 
 
-call(["gnome-terminal", "-x", "sh", "-c", "python3 settings.py"])
+
 call(["gnome-terminal", "-x", "sh", "-c", "python3 ./open3d-helper/ros_api.py"])
