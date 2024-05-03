@@ -1,22 +1,21 @@
 settings:
     ue4_container_name: 'ue4'
-    airsim_launch_path_file: '/home/airsim/AirSim/ros/src/airsim_ros_pkgs/launch/airsim_node.launch' 
 
-# envs:
-#     - domain: 'aereo'
-#         observation: 'stereo'
-#         x_action_range:
-#             min: -60
-#             max: 60
-#         y_action_range:
-#             min: -155
-#             max: 155
-#         z_action_range:
-#             min: -60
-#             max: 60
-#         yaw_action_range:
-#             min: -45
-#             max: 45
-#         pitch_action_range:
-#             min: -45
-#             max: 45
+gym:
+    mode: 'train'
+    env: 
+        name: 'aereo_stereo_semisub_position_nbv'
+        observation: 'stereo'
+        reconstrucion: false
+        vehicle_name : 'Hydrone'
+        camera_name : 'stereo' 
+        camera_dim:
+            - 672
+            - 376
+        domain : 'aereo'
+        observation_type : 'stereo'
+        space_observation_dim : 1 
+        space_action_dim : 5
+        max_steps : 1000000
+
+         
