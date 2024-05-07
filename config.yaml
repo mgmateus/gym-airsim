@@ -7,6 +7,11 @@ gym:
         name: 'aereo_stereo_semisub_position_nbv'
         observation: 'stereo'
         reconstrucion: false
+        shadow:
+            start_position:
+                - 0
+                - -8053.1
+                - 0.3
         vehicle_name : 'Hydrone'
         camera_name : 'stereo' 
         camera_dim:

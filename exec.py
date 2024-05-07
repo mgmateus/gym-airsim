@@ -37,9 +37,9 @@ if __name__ == "__main__":
     #Write main loop here...
     print(gym['env'])
     env = PositionNBV(ip, gym['env'])
-    for i in range(2):
-        env.step([.1, .1, .1, 0, 0])
-
+    for i in range(3):
+        print(f"step - {i}")
+        env.step([.3, .1, .1, 0, 0])
 
 #     rtabmap = subprocess_launch(reconstruction)
 #     os.killpg(rtabmap.pid, signal.SIGINT)

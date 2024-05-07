@@ -59,24 +59,7 @@
           ],
           "X": 0.9, "Y": 0, "Z": 0.30,
           "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-        }
-      },
-      "X": 0, "Y": 0, "Z": 0,
-      "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-    },
-    "Shadow": {
-      "VehicleType": "SimpleFlight",
-      "DefaultVehicleState": "Armed",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "AllowAPIAlways": true,
-      "Sensors": {
-        "Imu" : {
-          "SensorType": 2,
-          "Enabled": true
-        }
-      },
-      "Cameras": {
+        },
         "shadow": {
           "CaptureSettings": [
             {
@@ -89,17 +72,18 @@
               "MoutionBlurAmount": 0                    
             }
           ],
-          "X": 0.9, "Y": 0, "Z": 0.30,
+          "X": 0, "Y": -8053.1, "Z": 0.3, 
           "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
         }
       },
-      "X": 0, "Y": -8053.1, "Z": 0.3, 
+      "X": 0, "Y": 0, "Z": 0,
       "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
     }
+    
   },
   "SubWindows": [
-    {"WindowID": 1, "ImageType": 0, "CameraName": "stereo", "Visible": true, "VehicleName" : "Hydrone"},
-    {"WindowID": 0, "ImageType": 0, "CameraName": "shadow", "Visible": true, "VehicleName" : "Shadow"}
+    {"WindowID": 0, "ImageType": 0, "CameraName": "shadow", "Visible": true},
+    {"WindowID": 1, "ImageType": 0, "CameraName": "stereo", "Visible": true}
   ]
   
 }

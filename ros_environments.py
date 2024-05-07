@@ -14,7 +14,7 @@ from gymnasium import Env, spaces
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
-from airsim_base.types import ImageType
+from airsim_base.types import ImageType, Pose, Vector3r
 from ros_api import ActPosition
 
 class LoggerFiles:
@@ -45,6 +45,21 @@ class LoggerFiles:
             
         self.__count_name += 1
 
+
+def vehicle_config(ip, vehicle_name, camera_name, observation_type):
+    vehicle = ActPosition(ip, vehicle_name, camera_name, observation_type)   
+    vehicle.enableApiControl(True, 'Shadow')
+    vehicle.armDisarm(True, 'Shadow')
+
+    vehicle.simSetDetectionFilterRadius("shadow", ImageType.Scene, 200 * 100, vehicle_name="Shadow") 
+    vehicle.simAddDetectionFilterMeshName("shadow", ImageType.Scene, "Cube*", vehicle_name="Shadow") 
+
+    return vehicle
+
+def takeOff(vehicle):
+    vehicle.take_off() 
+    time.sleep(3)
+
 def make_observation_space(observation_type : str, camera_dim : str):
     return spaces.Dict(
                 {
@@ -61,13 +76,11 @@ def make_observation_space(observation_type : str, camera_dim : str):
                 }
             )
 
-def stop(target_pos, tf):
-    x, y, z, yaw, pitch = tf
-    return True
-
-        
-
 class PositionNBV(Env):
+    @staticmethod
+    def _move_shadow(client):
+        client.simSetVehiclePose(client.vehicle_pose, True, vehicle_name='Shadow')
+    
     def __init__(self, ip : str, 
                  config : dict):
         
@@ -80,29 +93,41 @@ class PositionNBV(Env):
         observation_type = config['observation_type']
         max_steps = config['max_steps']
 
+        self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
+
         self.observation_space = make_observation_space(observation_type, camera_dim)
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float64)  #mudar tipo para gym nativo
         self.n_steps = 0
         self.max_steps = max_steps
         self.ep = 0
-        
-        self.vehicle = ActPosition(ip, vehicle_name, camera_name, observation_type)    
-        self.vehicle.simSetDetectionFilterRadius("shadow", ImageType.Scene, 200 * 100) 
-        self.vehicle.simAddDetectionFilterMeshName("shadow", ImageType.Scene, "Cube*")    
-        
-        self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
 
-        self.markers = []
+        self.vehicle = vehicle_config(ip, vehicle_name, camera_name, observation_type)
+        
+        self.markers = {'Cube'}
         self.original_len = len(self.markers)
+        self.past_len = self.original_len
 
-        self.vehicle.take_off() 
-
+        self.vehicle.take_off(self.vehicle.vehicle_name)
+        self.vehicle.take_off('Shadow')
         time.sleep(3)
         
-    
+        
     def _reward(self):
-        self.vehicle.simSetVehiclePose(self.vehicle.vehicle_pose, True, 'shadow')
-        # detections = self.vehicle.simGetDetectedMeshes('shadow', ImageType.Scene, vehicle_name = 'shadow')
+      
+        viewd_markers, distances = self.vehicle.simGetDetectedMeshesDistances('shadow', ImageType.Scene,vehicle_name="Shadow")
+        
+        if distances:
+            if (8053.1 - min(distances)) < 30 or (8053.1 - max(distances)) > 120:
+                return -10
+        
+        self.markers -= set(viewd_markers)
+        len_markers = len(self.markers)
+
+        if len_markers == self.past_len:
+            return 0
+        
+        return self.original_len - len_markers
+
         
         # self.markers -= detections
         # len_markers = len(self.markers)
@@ -117,8 +142,12 @@ class PositionNBV(Env):
     
     def step(self, action):
         _ = self.vehicle.moveon(action)
+        self._move_shadow(self.vehicle)
+        reward = self._reward()
+        observation = self.vehicle.get_observation()
+        print(observation)
         # observation = self.vehicle.get_observation()
-        # print(self.vehicle.simGetDetectedMeshesDistances('shadow', ImageType.Scene, vehicle_name = 'shadow'))
+        
         # print(self.vehicle.simGetDetections('shadow', ImageType.Scene))
         # done = False # condition to finish
         # if done:
