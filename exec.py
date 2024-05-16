@@ -1,4 +1,5 @@
 
+import argparse
 import os
 import signal
 import sys
@@ -7,26 +8,33 @@ import yaml
 
 
 from utils import container_ip, subprocess_launch
-from ros_environments import PositionNBV
+from environments import PositionNBV
    
-
-if __name__ == "__main__":
+def get_config():
     config_path = os.path.abspath(__file__).replace('exec.py', 'config.yaml')
     print(config_path)
     with open(config_path, 'r') as file:
-        r = yaml.safe_load(file)
-        settings = r['settings']
-        gym = r['gym']
+        return yaml.safe_load(file)
 
-    ip = container_ip(settings['ue4_container_name'])       
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Configuration')
+    
+    parser.add_argument('--env', type= str, required=False, default='semisub-position', help='Gym environment name.')
+    parser.add_argument('--container_simulation', type= str, required=False, default='ue4', help='Docker container name to Unreal.')
+    args = parser.parse_args()
+    
+    config = get_config()
+    ip = container_ip(args.container_simulation)      
+    env_config = config['env'][args.env] 
+    
 
     simu = f"roslaunch airsim_ros_pkgs airsim_node.launch output:=screen host:={ip}"
-    reconstruction = f"roslaunch rtabmap_launch rtabmap.launch rgb_topic:=/airsim_node/{gym['env']['vehicle_name']}/{gym['env']['camera_name']}/Scene \
-                        depth_topic:=/airsim_node/{gym['env']['vehicle_name']}/{gym['env']['camera_name']}/DepthPerspective \
-                        camera_info_topic:=/airsim_node/{gym['env']['vehicle_name']}/{gym['env']['camera_name']}/Scene/camera_info \
-                        odom_topic:=/airsim_node/{gym['env']['vehicle_name']}/odom_local_ned \
-                        imu_topic:=/airsim_node/{gym['env']['vehicle_name']}/imu/Imu visual_odometry:=false \
-                        frame_id:={gym['env']['camera_name']}_optical approx_sync:=false rgbd_sync:=true queue_size:=1000 \
+    reconstruction = f"roslaunch rtabmap_launch rtabmap.launch rgb_topic:=/airsim_node/{env_config['vehicle_name']}/{env_config['camera_name']}/Scene \
+                        depth_topic:=/airsim_node/{env_config['vehicle_name']}/{env_config['camera_name']}/DepthPerspective \
+                        camera_info_topic:=/airsim_node/{env_config['vehicle_name']}/{env_config['camera_name']}/Scene/camera_info \
+                        odom_topic:=/airsim_node/{env_config['vehicle_name']}/odom_local_ned \
+                        imu_topic:=/airsim_node/{env_config['vehicle_name']}/imu/Imu visual_odometry:=false \
+                        frame_id:={env_config['camera_name']}_optical approx_sync:=false rgbd_sync:=true queue_size:=1000 \
                         scan_cloud_topic:=\points gen_cloud_voxel:=0.5"
     
 
@@ -35,8 +43,8 @@ if __name__ == "__main__":
     # wait to connect into airsim...
 
     #Write main loop here...
-    print(gym['env'])
-    env = PositionNBV(ip, gym['env'])
+    print(args.env)
+    env = PositionNBV(ip, env_config, args.env)
     for i in range(3):
         print(f"step - {i}")
         env.step([.3, .1, .1, 0, 0])
