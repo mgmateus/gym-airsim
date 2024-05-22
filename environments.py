@@ -15,7 +15,8 @@ from gymnasium import Env, spaces
 sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
 from airsim_base.types import ImageType
-from utils import make_observation_space, create_vehicle, normalize_value
+from ros_helper import ActPosition
+from utils import make_observation_space, normalize_value
  
 class LoggerFiles:
     def __init__(self, files_path : str) -> None:
@@ -49,41 +50,55 @@ class LoggerFiles:
 
 
 class PositionNBV(Env):
-    @staticmethod
-    def _move_shadow(client):
-        client.simSetVehiclePose(client.vehicle_pose, True, vehicle_name='Shadow')
-    
+   
     def __init__(self, ip : str, 
                  config : dict,
                  env_name : str):
         
-        print(config['vehicle_name'])
-        rospy.init_node(f'gym-{env_name}-{config["vehicle_name"]}-{config["domain"]}-{config["observation_type"]}')
+        rospy.init_node(f'gym-{env_name}-{config["observation"]}')
 
-        vehicle_name = config['vehicle_name']
-        camera_name = config['camera_name']
-        camera_dim = config['camera_dim']        
-        observation_type = config['observation_type']
-        max_steps = config['max_steps']
+        self.views = ['rgb', 'depth'] if config['observation'] == 'stereo' else ['rgb', 'depth', 'segmentation']
 
-        self.views = ['rgb', 'depth'] if observation_type == 'stereo' else ['rgb', 'depth', 'segmentation']
-
-        self.observation_space = make_observation_space(observation_type, camera_dim)
+        self.observation_space = make_observation_space(config['observation'], config['vehicle']['camera']['dim'])
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float64)  
         self.n_steps = 0
-        self.max_steps = max_steps
-        self.ep = 0
+        self.max_steps = config['max_steps']
 
         self.action_range = config['action_range']
-        self.vehicle = create_vehicle(ip, vehicle_name, camera_name, observation_type)
+        
+        self.vehicle = ActPosition(ip, 
+                                   config['vehicle']['name'], 
+                                   config['vehicle']['camera']['name'], 
+                                   config['vehicle']['start_pose'],
+                                   config['observation'])   
+        self.vehicle.enableApiControl(True, config['shadow']['name'])
+        self.vehicle.armDisarm(True, config['shadow']['name'])
+        self.shadow = config['shadow']
+        self.vehicle.simSetDetectionFilterRadius(config['shadow']['camera']['name'], 
+                                                 ImageType.Scene, 200 * 100, 
+                                                 vehicle_name=config['shadow']['name']) 
+        self.vehicle.simAddDetectionFilterMeshName(config['shadow']['camera']['name'], 
+                                              ImageType.Scene, f"{config['markers']['name']}*", 
+                                              vehicle_name=config['shadow']['name']) 
         
         self.markers = {'Cube'}
-        self.original_len = len(self.markers)
-        self.past_len = self.original_len
+        self.original_len = config['markers']['num']
+        self.past_len = config['markers']['num']
 
-        self.vehicle.take_off(self.vehicle.vehicle_name)
-        self.vehicle.take_off('Shadow')
-        time.sleep(3)
+        self.take_off()
+        
+    def take_off(self):
+        self.vehicle.take_off()
+        self.vehicle.take_off(self.shadow['name'])
+        
+    def _moveon(self, action):
+        norm_action = self._normalize_action(action)
+        self.vehicle.moveon(norm_action)
+        
+        pose = self.vehicle.pose
+        self.vehicle.simSetVehiclePose(pose, ignore_collision=True, vehicle_name=self.shadow['name'])
+        
+        self.vehicle.pgimbal(self.shadow['name'], self.shadow['camera']['name'])
         
         
     def _reward(self):
@@ -120,15 +135,15 @@ class PositionNBV(Env):
         return px, py, pz, yaw, gimbal_pitch
 
 
-    def reset(self, curr_ep : int):
-        self.ep = curr_ep
+    def reset(self):
         
         return self.observation_space
     
     def step(self, action):
-        norm_action = self._normalize_action(action)
-        _ = self.vehicle.moveon(norm_action)
-        self._move_shadow(self.vehicle)
+        # norm_action = self._normalize_action(action)
+        # pose, pgimbal = self.vehicle.moveon(norm_action)
+        # self._move_shadow(pose, pgimbal)
+        self._moveon(action)
         reward = self._reward()
         observation = self.vehicle.get_observation()
         

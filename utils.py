@@ -7,7 +7,7 @@ import time
 
 import numpy as np
 
-from gymnasium import Env, spaces
+from gymnasium import spaces
 sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
 
@@ -18,31 +18,30 @@ from ros_helper import ActPosition
 
 
 def container_ip(container_name : str):
+    """Find the named container's ip.
+
+    Args:
+        container_name (str): container's name
+
+    Returns:
+        str: container's ip
+    """
     byte_host_ip = subprocess.check_output(f'ping {container_name}' + ' -c1 | head -1 | grep -Eo "[0-9.]{4,}"', shell=True)
     return  byte_host_ip.decode('utf-8').replace('\n', "")
 
 def subprocess_launch(cmd : str):
+    """Execute a command in another terminal as a python subprocess.
+
+    Args:
+        cmd (str): The expecified command.
+
+    Returns:
+        Popen: The subprocess contained opened terminal resources.
     """
-    Function to launch the airsim simulation node
-    """
-    launch = subprocess.Popen(['gnome-terminal', '--disable-factory', "gnome-terminal", "-x", "sh", "-c", cmd],
-                     preexec_fn=os.setpgrp)
-    
+    launch = subprocess.Popen(['xterm', '-e', f'bash -c "{cmd}; exec bash"'],
+                        preexec_fn=os.setpgrp)
     return launch
 
-def create_vehicle(ip, vehicle_name, camera_name, observation_type):
-    vehicle = ActPosition(ip, vehicle_name, camera_name, observation_type)   
-    vehicle.enableApiControl(True, 'Shadow')
-    vehicle.armDisarm(True, 'Shadow')
-
-    vehicle.simSetDetectionFilterRadius("shadow", ImageType.Scene, 200 * 100, vehicle_name="Shadow") 
-    vehicle.simAddDetectionFilterMeshName("shadow", ImageType.Scene, "Cube*", vehicle_name="Shadow") 
-
-    return vehicle
-
-def takeOff(vehicle):
-    vehicle.take_off() 
-    time.sleep(3)
 
 def _make_2d_observation_space(observation_type : str, camera_dim : str):
     w, h = camera_dim[0], camera_dim[1]

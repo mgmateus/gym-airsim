@@ -1,21 +1,89 @@
 
-mode: 'train'
+mode: 
+    train :
+        - 1
 env: 
-    semisub-position:
-        observation: 'stereo'
-        reconstrucion: false
+    semisub-position-aereo:
+        vehicle : 
+            name : 'Hydrone'
+            start_pose:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+            camera : 
+                name : 'stereo' 
+                dim:
+                    - 672
+                    - 376
         shadow:
-            start_position:
+            name : 'Shadow'
+            start_pose:
                 - 0
                 - -8053.1
-                - 0.3
-        vehicle_name : 'Hydrone'
-        camera_name : 'stereo' 
-        camera_dim:
-            - 672
-            - 376
+                - 0
+                - 0
+                - 0
+                - 0
+            camera : 
+                name : 'shadow'
         domain : 'aereo'
-        observation_type : 'stereo'
+        reconstrucion: false
+        markers :
+            name : Cube
+            num : 100
+        observation: 'stereo'
+        max_steps : 1000000
+        space_observation_dim : 3 
+        space_action_dim : 5
+        action_range:
+            x:
+                - -60
+                - 60
+            y :
+                - -155
+                - 155
+            z :
+                - -60
+                - 60
+            yaw : 
+                - -45
+                - 45
+            gimbal_pitch:
+                - -45
+                - 45
+
+    semisub-position-undewater:
+        vehicle : 
+            name : 'Hydrone'
+            start_pose:
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+                - 0
+            camera : 
+                name : 'stereo' 
+                dim:
+                    - 672
+                    - 376
+        shadow:
+            name : 'Shadow'
+            start_pose:
+                - 0
+                - -8053.1
+                - 0
+                - 0
+                - 0
+                - 0
+            camera : 
+                name : 'shadow'
+        domain : 'aereo'
+        reconstrucion: false
+        observation: 'stereo'
         space_observation_dim : 1 
         space_action_dim : 5
         action_range:
@@ -34,6 +102,7 @@ env:
             gimbal_pitch:
                 - -45
                 - 45
-        max_steps : 1000000
+        agent :
+            max_steps : 1000000
 
          
