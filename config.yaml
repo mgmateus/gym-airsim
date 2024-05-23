@@ -33,7 +33,7 @@ env:
         reconstrucion: false
         markers :
             name : Cube
-            num : 100
+            num : 175
         observation: 'stereo'
         max_steps : 1000000
         space_observation_dim : 3 
@@ -61,7 +61,7 @@ env:
             start_pose:
                 - 0
                 - 0
-                - 0
+                - -8
                 - 0
                 - 0
                 - 0
@@ -75,16 +75,20 @@ env:
             start_pose:
                 - 0
                 - -8053.1
-                - 0
+                - -8
                 - 0
                 - 0
                 - 0
             camera : 
                 name : 'shadow'
-        domain : 'aereo'
+        domain : 'underwater'
         reconstrucion: false
+        markers :
+            name : Sphere
+            num : 63
         observation: 'stereo'
-        space_observation_dim : 1 
+        max_steps : 1000000
+        space_observation_dim : 3 
         space_action_dim : 5
         action_range:
             x:
@@ -102,7 +106,5 @@ env:
             gimbal_pitch:
                 - -45
                 - 45
-        agent :
-            max_steps : 1000000
 
          

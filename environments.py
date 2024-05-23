@@ -51,6 +51,13 @@ class LoggerFiles:
 
 class PositionNBV(Env):
    
+    @staticmethod
+    def set_markers(markers_name, num):
+        m = [markers_name]
+        m = m + [f"{markers_name}{i}" for i in range(1, num+1)]
+        return set(m)
+    
+    
     def __init__(self, ip : str, 
                  config : dict,
                  env_name : str):
@@ -81,7 +88,7 @@ class PositionNBV(Env):
                                               ImageType.Scene, f"{config['markers']['name']}*", 
                                               vehicle_name=config['shadow']['name']) 
         
-        self.markers = {'Cube'}
+        self.markers = self.set_markers(config['markers']['name'], config['markers']['num'])
         self.original_len = config['markers']['num']
         self.past_len = config['markers']['num']
 
@@ -91,6 +98,9 @@ class PositionNBV(Env):
         self.vehicle.take_off()
         self.vehicle.take_off(self.shadow['name'])
         
+        return True
+    
+    
     def _moveon(self, action):
         norm_action = self._normalize_action(action)
         self.vehicle.moveon(norm_action)
@@ -100,22 +110,37 @@ class PositionNBV(Env):
         
         self.vehicle.pgimbal(self.shadow['name'], self.shadow['camera']['name'])
         
+        return True
+    
+    def _wshadow_distance(self):
+        wx, wy, wz, _, _, _ = self.shadow['start_pose']
+
+        pose = self.vehicle.simGetVehiclePose(vehicle_name=self.shadow['name'])
+        rx, ry, rz = pose.position.x_val, pose.position.y_val, pose.position.z_val
+        
+        x, y, z = wx + rx, wy + ry, wz + rz
+        
+        return np.sqrt(x**2 + y**2 + z**2)
+        
+        
+        
         
     def _reward(self):
       
-        viewd_markers, distances = self.vehicle.simGetDetectedMeshesDistances('shadow', ImageType.Scene,vehicle_name="Shadow")
-        
+        viewd_markers, distances = self.vehicle.simGetDetectedMeshesDistances(self.shadow['camera']['name'], ImageType.Scene,vehicle_name=self.shadow['name'])
+        d = self._wshadow_distance()
         if distances:
-            if (8053.1 - min(distances)) < 30 or (8053.1 - max(distances)) > 120:
+            if (d - min(distances)) < 30 or (d - max(distances)) > 120:
                 return -10
         
-        self.markers -= set(viewd_markers)
-        len_markers = len(self.markers)
+            self.markers -= set(viewd_markers)
+            len_markers = len(self.markers)
 
-        if len_markers == self.past_len:
-            return 0
-        
-        return self.original_len - len_markers
+            if len_markers == self.past_len:
+                return 0
+            
+            return self.original_len - len_markers
+        return -20
     
     
     def _normalize_action(self, action):
