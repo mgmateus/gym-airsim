@@ -41,7 +41,7 @@
                 "x" : [50, 170],
                 "y" : [50, 170]
             },
-            "altitude_range" : [8, 60],
+            "altitude_range" : [9, 60],
             "centroide" : "centroide"
 
         }

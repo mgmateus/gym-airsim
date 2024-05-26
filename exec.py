@@ -29,17 +29,13 @@ if __name__ == "__main__":
     # wait to connect into airsim...
 
     #Write main loop here...
-
     env = PositionNBV(ip, env_config)
-    env._random_vehicle_pose()
     
     # rtabmap = subprocess_launch(reconstruction)
     # time.sleep(15)
-    for i in range(3):
+    for i in range(30):
         print(f"step - {i}")
-        # env.step([0, 0, .1, 0, 0])
-        env._random_vehicle_pose()
-        time.sleep(1)
+        env.step([0, 0, .1, 0, 0])
 
     # os.killpg(rtabmap.pid, signal.SIGINT)
     os.killpg(airsim.pid, signal.SIGINT)

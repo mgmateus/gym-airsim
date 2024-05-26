@@ -155,22 +155,47 @@ class PositionNBV(Env):
         self.original_len = config['markers']['num']
         self.past_len = config['markers']['num']
         
-        # print(self.vehicle.simGetVehiclePose())
-        # sys.exit()
-        self._start_pose(config['vehicle'], config['shadow'])
+        self._start_pose()
         self._take_off()
         
-    def _start_pose(self, vehicle : dict, shadow : dict):
-        x, y, z, roll, pitch, yaw = vehicle['start_pose']
-        self.vehicle.set_start_pose([x, y, z], [roll, pitch, yaw])
-        x, y, z, roll, pitch, yaw = shadow['start_pose']
-        self.vehicle.set_start_pose([x, y, z], [roll, pitch, yaw], shadow['name'])
+    def _start_pose(self):        
+        self.vehicle.set_start_pose()
+        self.vehicle.set_start_pose(self.shadow['name'])
         
+        if self.domain == 'aereo':
+            position, _= self.vehicle.get_start_pose()
+            position[1] -= 13 
+            position[2] = self.altitude_range[0]
+            self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            global_position = self.shadow['global_pose'][:3]
+            shadow_position, _= self.vehicle.get_pose(self.shadow['name'])
+            current_position = np.array(global_position) + np.array(shadow_position)
+            current_position = current_position.tolist()
+            current_position[1] -= 13 
+            current_position[2] = self.altitude_range[0]
+            self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+            
     def _take_off(self):
         self.vehicle.take_off()
         self.vehicle.take_off(self.shadow['name'])
         
         return True
+    
+    def _normalize_action(self, action):
+        x, y, z, yaw_angle, gimbal_pitch_angle = action
+        xmin, xmax = self.action_range['x']
+        ymin, ymax = self.action_range['y']
+        zmin, zmax = self.action_range['z']
+        yaw_min, yaw_max = self.action_range['yaw']
+        gimbal_pitch_min, gimbal_pitch_max = self.action_range['gimbal_pitch']
+        
+        px = normalize_value(x, -1, 1, xmin, xmax)
+        py = normalize_value(y, -1, 1, ymin, ymax)
+        pz = normalize_value(z*-1, -1, 1, zmin, zmax)
+        yaw = normalize_value(yaw_angle, -1, 1, yaw_min, yaw_max)
+        gimbal_pitch = normalize_value(gimbal_pitch_angle, -1, 1, gimbal_pitch_min, gimbal_pitch_max)
+        
+        return px, py, pz, yaw, gimbal_pitch
     
     
     def _moveon(self, action):
@@ -183,16 +208,6 @@ class PositionNBV(Env):
         self.vehicle.pgimbal(self.shadow['name'], self.shadow['camera']['name'])
         
         return True
-    
-    def _wshadow_distance(self):
-        wx, wy, wz, _, _, _ = self.shadow['global_pose']
-
-        pose = self.vehicle.simGetVehiclePose(vehicle_name=self.shadow['name'])
-        rx, ry, rz = pose.position.x_val, pose.position.y_val, pose.position.z_val
-        
-        x, y, z = wx + rx, wy + ry, wz + rz
-        
-        return np.sqrt(x**2 + y**2 + z**2)
         
     def _random_vehicle_pose(self, randoz_yaw : bool = False, randon_z : bool = False):
         random.seed()
@@ -222,61 +237,81 @@ class PositionNBV(Env):
         self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw], self.shadow['name'])
         
         if self.domain == 'aereo':
-            self.vehicle.set_object_pose([px, py-13, zmin], [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
-            self.vehicle.set_object_pose([px, py-13, zmin], [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+            position = [px, py, pz]
+            position[1] -= 13 
+            position[2] = self.altitude_range[0]
+            self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            
+            global_position = self.shadow['global_pose'][:3]
+            current_position = np.array(global_position) + np.array(position)
+            current_position = current_position.tolist()
+            self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+            
+    def _wshadow_distance(self):
+        wx, wy, wz, _, _, _ = self.shadow['global_pose']
+
+        pose = self.vehicle.simGetVehiclePose(vehicle_name=self.shadow['name'])
+        rx, ry, rz = pose.position.x_val, pose.position.y_val, pose.position.z_val
         
-    def _reward(self):
-      
+        x, y, z = wx + rx, wy + ry, wz + rz
+        
+        return np.sqrt(x**2 + y**2 + z**2)
+        
+
+    def _get_state(self):
+        observation = self.vehicle.get_observation()
+        #implemtents pack observation
+        
         viewd_markers, distances = self.vehicle.simGetDetectedMeshesDistances(self.shadow['camera']['name'], ImageType.Scene,vehicle_name=self.shadow['name'])
         d = self._wshadow_distance()
+        done = False
+        reset_pose = False
+        distance = 0
+        len_markers = self.past_len
         if distances:
-            if (d - min(distances)) < 30 or (d - max(distances)) > 120:
-                return -10
-        
             self.markers -= set(viewd_markers)
             len_markers = len(self.markers)
-
-            if len_markers == self.past_len:
-                return 0
             
-            return self.original_len - len_markers
-        return -20
-    
-    
-    def _normalize_action(self, action):
-        x, y, z, yaw_angle, gimbal_pitch_angle = action
-        xmin, xmax = self.action_range['x']
-        ymin, ymax = self.action_range['y']
-        zmin, zmax = self.action_range['z']
-        yaw_min, yaw_max = self.action_range['yaw']
-        gimbal_pitch_min, gimbal_pitch_max = self.action_range['gimbal_pitch']
+            if (d - min(distances)) < 30 or (d - max(distances)) > 120:
+                distance = 1
+                reset_pose = True
+                
+            if not len_markers or (self.original_len - len_markers) >= .97*self.original_len :
+                done = True
+                
+        else:
+            reset_pose = True
         
-        px = normalize_value(x, -1, 1, xmin, xmax)
-        py = normalize_value(y, -1, 1, ymin, ymax)
-        pz = normalize_value(z*-1, -1, 1, zmin, zmax)
-        yaw = normalize_value(yaw_angle, -1, 1, yaw_min, yaw_max)
-        gimbal_pitch = normalize_value(gimbal_pitch_angle, -1, 1, gimbal_pitch_min, gimbal_pitch_max)
+        return observation, len_markers, distance, reset_pose, done
+    
+    def _reward(self, len_markers, distance, reset_pose, done):
+        if done:
+            return self.original_len, done
         
-        return px, py, pz, yaw, gimbal_pitch
-
+        if reset_pose:
+            self._start_pose()
+            if distance:
+                return -10, done
+            return -20, done
+        
+        if len_markers == self.past_len:
+            return 0, done
+        
+        self.past_len = len_markers
+        return self.original_len - len_markers, done
 
     def reset(self):
         
         return self.observation_space
     
     def step(self, action):
-        # norm_action = self._normalize_action(action)
-        # pose, pgimbal = self.vehicle.moveon(norm_action)
-        # self._move_shadow(pose, pgimbal)
         self._moveon(action)
-        reward = self._reward()
+        observation, len_markers, distance, reset_pose, done = self._get_state()
+        reward, done = self._reward(len_markers, distance, reset_pose, done)
         print(f'reward : {reward}')
-        observation = self.vehicle.get_observation()
         
-        
-        done = False # condition to finish
         if done:
-            self.vehicle.reset() #reset of airsim
+            self.reset() #reset of airsim
             return observation, done
      
         return observation, done
