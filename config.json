@@ -1,0 +1,51 @@
+{
+    "mode" : {
+        "train" : {
+            "learning_rate" : 0.09,
+            "epochs": 10,
+            "max_steps" : 1000000
+        }
+    },
+    "envs" : {
+        "semisub-position-aereo" : {
+            "vehicle" : {
+                "start_pose" : [0,0,0,0,0,0],
+                "camera" : {
+
+                },
+                "base_name" : "boat_vehicle"
+            },
+            "shadow" : {
+                "start_pose" : [0,0,0,0,0,0],
+                "camera" : {
+                    
+                },
+                "base_name" : "boat_shadow"
+            },
+            "domain" : "aereo",
+            "markers" : {
+                "name" : "Cube",
+                "num" : 175
+            },
+            "observation" : "stereo",
+            "space_observation_dim" : 3,
+            "space_action_dim" : 5,
+            "action_range" : {
+                "x" : [-60, 60],
+                "y" : [-155, 155],
+                "z" : [-60, 60],
+                "yaw" : [-45, 45],
+                "gimbal_pitch" : [-45, 45]
+            },
+            "target_range" : {
+                "x" : [50, 170],
+                "y" : [50, 170]
+            },
+            "altitude_range" : [8, 60],
+            "centroide" : "centroide"
+
+        }
+        
+    }
+
+}

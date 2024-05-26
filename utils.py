@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+import json
+import math
 import os
+import random
 import subprocess
 import sys
 import time
@@ -16,6 +19,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 from airsim_base.types import ImageType
 from ros_helper import ActPosition
 
+def json_content(path : str):
+    with open(path, 'r') as file:
+        return json.load(file)
 
 def container_ip(container_name : str):
     """Find the named container's ip.
@@ -43,33 +49,101 @@ def subprocess_launch(cmd : str):
     return launch
 
 
-def _make_2d_observation_space(observation_type : str, camera_dim : str):
-    w, h = camera_dim[0], camera_dim[1]
-    return spaces.Dict(
-                {
-                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
-                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(3,), dtype=np.float32),
-                }
-            )  if observation_type == 'stereo' else spaces.Dict(
-                {
-                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
-                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(6,), dtype=np.float32),
-                }
-            )
-            
-def _make_3d_observation_space(observation_type : str, camera_dim : str):
-    return None
-            
-def make_observation_space(observation_type : str, camera_dim : str, _2d : bool = True):
-    return _make_2d_observation_space(observation_type, camera_dim) if _2d else _make_3d_observation_space(observation_type, camera_dim)
+def process_cfg(mode_ : str, env_ : str):
+    settings_path = os.path.abspath(__file__).replace('utils.py', 'settings/settings.json')
+    config_path = os.path.abspath(__file__).replace('utils.py', 'config.json')
+    
+    settings = json_content(settings_path)
+    config = json_content(config_path)
+    
+    svehicle_names = list(settings['Vehicles'].keys())
+    
+    svehicle = settings['Vehicles'][svehicle_names[0]]
+    svehicle_name = svehicle_names[0]
+    gx, gy, gz, groll, gpitch, gyaw = svehicle['X'], svehicle['Y'], svehicle['Z'], \
+                                svehicle['Roll'], svehicle['Pitch'], svehicle['Yaw']
+    svehicle_camera_name = list(svehicle['Cameras'].keys())[0]
+    
+    svehicle_camera_dim = svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]['Width'],\
+                          svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]['Height']  
+    
+    sshadow = settings['Vehicles'][svehicle_names[1]]
+    sshadow_name = svehicle_names[1]
+    gsx, gsy, gsz, gsroll, gspitch, gsyaw = sshadow['X'], sshadow['Y'], sshadow['Z'], \
+                                sshadow['Roll'], sshadow['Pitch'], sshadow['Yaw']
+    sshadow_camera_name = list(sshadow['Cameras'].keys())[0]
+    sshadow_camera_dim = sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Width'],\
+                          sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Height']
+                          
+    mode = config['mode'][mode_]                      
+    env = config['envs'][env_]
+    
+    env['name'] = env_
+    env['vehicle']['name'] = svehicle_name
+    env['vehicle']['global_pose'] = [gx, gy, gz, groll, gpitch, gyaw]
+    env['vehicle']['camera']['name'] = svehicle_camera_name
+    env['vehicle']['camera']['dim'] = svehicle_camera_dim
+    
+    
+    env['shadow']['name'] = sshadow_name
+    env['shadow']['global_pose'] = [gsx, gsy, gsz, gsroll, gspitch, gsyaw]
+    env['shadow']['camera']['name'] = sshadow_camera_name
+    env['shadow']['camera']['dim'] = sshadow_camera_dim
+    
+    return mode, env
 
+def airsim_launch(ip : str):
+    launch = f"roslaunch airsim_ros_pkgs airsim_node.launch output:=screen host:={ip}"
+    s = subprocess_launch(launch)
+    time.sleep(4)
+    return s
+
+def rtabmap_launch(vehicle_name : str, camera_name : str):
+    launch = f"roslaunch rtabmap_launch rtabmap.launch delete_db_on_start:=true rgb_topic:=/airsim_node/{vehicle_name}/{camera_name}/Scene \
+                        depth_topic:=/airsim_node/{vehicle_name}/{camera_name}/DepthPerspective \
+                        camera_info_topic:=/airsim_node/{vehicle_name}/{camera_name}/Scene/camera_info \
+                        odom_topic:=/airsim_node/{vehicle_name}/odom_local_ned \
+                        imu_topic:=/airsim_node/{vehicle_name}/imu/Imu visual_odometry:=false \
+                        frame_id:={camera_name}_optical approx_sync:=false rgbd_sync:=true queue_size:=1000 \
+                        scan_cloud_topic:=\points gen_cloud_voxel:=0.5"
+    s = subprocess_launch(launch)
+    time.sleep(15)
+    return s
 
 def normalize_value(x, min_val, max_val, a, b):
     return ((x - min_val) / (max_val - min_val)) * (b - a) + a
+
+def random_choice(min_range, max_range):
+    random.seed()
+    a, b = min_range
+    c, d = max_range
+    return random.uniform(a, b) if random.choice([True, False]) else random.uniform(c, d)
+
+def theta(vehicle_pose : list, target_position : list):
+    vx, vy, vz, _, _, yaw = vehicle_pose
+    tx, ty, _ = target_position
+    heading = np.arctan2(ty - vy, tx - vx)
     
+    if heading > math.pi:
+        heading -= 2 * math.pi
+
+    elif heading < -math.pi:
+        heading += 2 * math.pi
+    return heading
+
+def quaternion_to_euler(q):
+    x, y, z, w = q
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll = math.atan2(t0, t1)
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch = math.asin(t2)
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw = math.atan2(t3, t4)
+    return [roll, pitch, yaw]
         
 
     

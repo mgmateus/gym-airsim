@@ -1,7 +1,9 @@
-import rospy
+
 import cv2
+import math
 import os
-import yaml
+import rospy
+import random
 import sys
 import time
 
@@ -16,7 +18,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
 from airsim_base.types import ImageType
 from ros_helper import ActPosition
-from utils import make_observation_space, normalize_value
+from utils import normalize_value, random_choice, theta, quaternion_to_euler
  
 class LoggerFiles:
     def __init__(self, files_path : str) -> None:
@@ -47,7 +49,28 @@ class LoggerFiles:
         self.__count_name += 1
 
 
-
+def make_2d_observation_space(observation_type : str, camera_dim : str):
+    w, h = camera_dim[0], camera_dim[1]
+    return spaces.Dict(
+                {
+                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
+                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
+                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(3,), dtype=np.float32),
+                }
+            )  if observation_type == 'stereo' else spaces.Dict(
+                {
+                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
+                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
+                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
+                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(6,), dtype=np.float32),
+                }
+            )
+            
+def make_3d_observation_space(observation_type : str, camera_dim : str):
+    return None
+            
+def make_observation_space(observation_type : str, camera_dim : str, _2d : bool = True):
+    return make_2d_observation_space(observation_type, camera_dim) if _2d else make_3d_observation_space(observation_type, camera_dim)
 
 class PositionNBV(Env):
    
@@ -57,44 +80,93 @@ class PositionNBV(Env):
         m = m + [f"{markers_name}{i}" for i in range(1, num+1)]
         return set(m)
     
-    
-    def __init__(self, ip : str, 
-                 config : dict,
-                 env_name : str):
+    @staticmethod
+    def vs_start(ip : str, config : dict):
+        vehicle_ = config['vehicle']
+        shadow = config['shadow']
+        observation = config['observation']
+        markers = config['markers']
         
-        rospy.init_node(f'gym-{env_name}-{config["observation"]}')
+        vehicle = ActPosition(ip, 
+                              vehicle_['name'], 
+                              vehicle_['camera']['name'], 
+                              vehicle_['global_pose'], 
+                              vehicle_['start_pose'],
+                              observation)
+        
+        vehicle.enableApiControl(True, shadow['name'])
+        vehicle.armDisarm(True, shadow['name'])
+        vehicle.simSetDetectionFilterRadius(shadow['camera']['name'], 
+                                                 ImageType.Scene, 200 * 100, 
+                                                 vehicle_name=shadow['name'])
+        
+        vehicle.simAddDetectionFilterMeshName(shadow['camera']['name'], 
+                                              ImageType.Scene, f"{markers['name']}*", 
+                                              vehicle_name=shadow['name'])
+        return vehicle, shadow
+        
+    @staticmethod
+    def quadrant(px : float, py : float):
+        """
+        The objective is turn around of center (0,0) represented for the structure center.
+        
+                 X
+        --------------------
+        |        |         |
+        |   Q3   |    Q2   |                  
+        |        |         |   
+        -------(0,0)-------- Y              
+        |        |         |   
+        |   Q1   |    Q0   |   
+        |        |         |   
+        --------------------   
 
-        self.views = ['rgb', 'depth'] if config['observation'] == 'stereo' else ['rgb', 'depth', 'segmentation']
+        """
+        if px < 0 and py > 0:
+            #Q0
+            return np.radians(-67.5), np.radians(-22.5)
+        
+        if px < 0 and py < 0:
+            #Q1
+            return np.radians(22.5), np.radians(67.5)
+        
+        if px > 0 and py > 0:
+            #Q2
+            return np.radians(-112.5), np.radians(-157.5)
+        return np.radians(112.5), np.radians(157.5)
+        
+    def __init__(self, ip : str, 
+                 config : dict):
+        
+        rospy.init_node(f"gym-{config['name']}-{config['observation']}")
 
         self.observation_space = make_observation_space(config['observation'], config['vehicle']['camera']['dim'])
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float64)  
         self.n_steps = 0
-        self.max_steps = config['max_steps']
-
+        
+        self.domain = config['domain']
+        self.vehicle, self.shadow = self.vs_start(ip, config)
+        self.vehicle_cfg = config['vehicle']
         self.action_range = config['action_range']
-        
-        self.vehicle = ActPosition(ip, 
-                                   config['vehicle']['name'], 
-                                   config['vehicle']['camera']['name'], 
-                                   config['vehicle']['start_pose'],
-                                   config['observation'])   
-        self.vehicle.enableApiControl(True, config['shadow']['name'])
-        self.vehicle.armDisarm(True, config['shadow']['name'])
-        self.shadow = config['shadow']
-        self.vehicle.simSetDetectionFilterRadius(config['shadow']['camera']['name'], 
-                                                 ImageType.Scene, 200 * 100, 
-                                                 vehicle_name=config['shadow']['name']) 
-        self.vehicle.simAddDetectionFilterMeshName(config['shadow']['camera']['name'], 
-                                              ImageType.Scene, f"{config['markers']['name']}*", 
-                                              vehicle_name=config['shadow']['name']) 
-        
+        self.target_range = config['target_range']
+        self.altitude_range = config['altitude_range']
+        self.centroide = config['centroide']
         self.markers = self.set_markers(config['markers']['name'], config['markers']['num'])
         self.original_len = config['markers']['num']
         self.past_len = config['markers']['num']
-
-        self.take_off()
         
-    def take_off(self):
+        # print(self.vehicle.simGetVehiclePose())
+        # sys.exit()
+        self._start_pose(config['vehicle'], config['shadow'])
+        self._take_off()
+        
+    def _start_pose(self, vehicle : dict, shadow : dict):
+        x, y, z, roll, pitch, yaw = vehicle['start_pose']
+        self.vehicle.set_start_pose([x, y, z], [roll, pitch, yaw])
+        x, y, z, roll, pitch, yaw = shadow['start_pose']
+        self.vehicle.set_start_pose([x, y, z], [roll, pitch, yaw], shadow['name'])
+        
+    def _take_off(self):
         self.vehicle.take_off()
         self.vehicle.take_off(self.shadow['name'])
         
@@ -113,7 +185,7 @@ class PositionNBV(Env):
         return True
     
     def _wshadow_distance(self):
-        wx, wy, wz, _, _, _ = self.shadow['start_pose']
+        wx, wy, wz, _, _, _ = self.shadow['global_pose']
 
         pose = self.vehicle.simGetVehiclePose(vehicle_name=self.shadow['name'])
         rx, ry, rz = pose.position.x_val, pose.position.y_val, pose.position.z_val
@@ -122,8 +194,36 @@ class PositionNBV(Env):
         
         return np.sqrt(x**2 + y**2 + z**2)
         
+    def _random_vehicle_pose(self, randoz_yaw : bool = False, randon_z : bool = False):
+        random.seed()
+        axmin, axmax = self.action_range['x']
+        aymin, aymax = self.action_range['y']
         
+        txmin, txmax = self.target_range['x']
+        tymin, tymax = self.target_range['y']
         
+        zmin, zmax = self.altitude_range
+        
+        px = random_choice((axmin - txmin, txmin), (txmax, txmax + axmax))
+        py = random_choice((aymin - tymin, tymin), (tymax, tymax + aymax))
+        pz = random.uniform(zmin, zmax) if randon_z else zmin-2
+        
+
+        centroide_pose = self.vehicle.objectp2list(self.centroide)
+        tf = self.vehicle.tf()
+        vehicle_position = [px, py, tf[2]]
+        vehicle_e_orientation = quaternion_to_euler(tf[3:])
+        vehicle_pose = vehicle_position + vehicle_e_orientation
+        
+        a, b = self.quadrant(px, py)
+        t = theta(vehicle_pose, centroide_pose[:3])
+        yaw = random.uniform(a, b) + t if randoz_yaw else t
+        self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw])
+        self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw], self.shadow['name'])
+        
+        if self.domain == 'aereo':
+            self.vehicle.set_object_pose([px, py-13, zmin], [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            self.vehicle.set_object_pose([px, py-13, zmin], [0, np.deg2rad(-90), 0], self.shadow['base_name'])
         
     def _reward(self):
       
@@ -170,6 +270,7 @@ class PositionNBV(Env):
         # self._move_shadow(pose, pgimbal)
         self._moveon(action)
         reward = self._reward()
+        print(f'reward : {reward}')
         observation = self.vehicle.get_observation()
         
         
