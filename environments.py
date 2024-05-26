@@ -217,11 +217,11 @@ class PositionNBV(Env):
         txmin, txmax = self.target_range['x']
         tymin, tymax = self.target_range['y']
         
-        zmin, zmax = self.altitude_range
+        zmin, _ = self.altitude_range
         
         px = random_choice((axmin - txmin, txmin), (txmax, txmax + axmax))
         py = random_choice((aymin - tymin, tymin), (tymax, tymax + aymax))
-        pz = random.uniform(zmin, zmax) if randon_z else zmin-2
+        pz = zmin-3
         
 
         centroide_pose = self.vehicle.objectp2list(self.centroide)
@@ -230,9 +230,8 @@ class PositionNBV(Env):
         vehicle_e_orientation = quaternion_to_euler(tf[3:])
         vehicle_pose = vehicle_position + vehicle_e_orientation
         
-        a, b = self.quadrant(px, py)
-        t = theta(vehicle_pose, centroide_pose[:3])
-        yaw = random.uniform(a, b) + t if randoz_yaw else t
+        
+        yaw = theta(vehicle_pose, centroide_pose[:3])
         self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw])
         self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw], self.shadow['name'])
         

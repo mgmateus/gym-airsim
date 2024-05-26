@@ -33,9 +33,11 @@ if __name__ == "__main__":
     
     # rtabmap = subprocess_launch(reconstruction)
     # time.sleep(15)
-    for i in range(30):
-        print(f"step - {i}")
-        env.step([0, 0, .1, 0, 0])
+    for i in range(10):
+        # print(f"step - {i}")
+        # env.step([0, 0, .1, 0, 0])
+        env._random_vehicle_pose(True, True)
+        time.sleep(0.5)
 
     # os.killpg(rtabmap.pid, signal.SIGINT)
     os.killpg(airsim.pid, signal.SIGINT)
