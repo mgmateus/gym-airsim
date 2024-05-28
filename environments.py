@@ -9,6 +9,7 @@ import time
 
 import numpy as np
 
+from collections import deque
 from math import dist
 from numpy.typing import NDArray
 from typing import List, Tuple
@@ -49,28 +50,156 @@ class LoggerFiles:
         self.__count_name += 1
 
 
-def make_2d_observation_space(observation_type : str, camera_dim : str):
-    w, h = camera_dim[0], camera_dim[1]
-    return spaces.Dict(
-                {
-                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
-                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(3,), dtype=np.float32),
+class StockPile:
+    
+    def __init__(self, observation_type : str , image_dim : tuple, pack_len : int) -> None:
+        self.observation_type = observation_type
+        self.pack_len = pack_len
+        w, h = image_dim
+        self.__observation_space = {
+                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, h*3, w), dtype=np.uint8),
+                    "depth": spaces.Box(low = -2**63, high = 2**63, shape=(1, h*3, w), dtype=np.float32),
+                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3, h*3, w), dtype=np.uint8),
+                    "point_cloud": spaces.Box(low = -2**63, high = 2**63, shape=(1, ), dtype=np.float32),
+                    "tf": spaces.Box(low = -2**63, high = 2**63, shape=(7*3,), dtype=np.float64)
                 }
-            )  if observation_type == 'stereo' else spaces.Dict(
-                {
-                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "depth": spaces.Box(low = 0, high = 255, shape=(1, w, h), dtype=int),
-                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3, w, h), dtype=int),
-                    "tf": spaces.Box(low = -2**63, high = 2**63 - 2, shape=(6,), dtype=np.float32),
-                }
-            )
             
-def make_3d_observation_space(observation_type : str, camera_dim : str):
-    return None
+        self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+        self.__stereo = {'rgb' : deque([], maxlen=pack_len), 
+                         'depth' : deque([], maxlen=pack_len), 
+                         'tf' : deque([], maxlen=pack_len)}
+        self.__panoptic = {'rgb' : deque([], maxlen=pack_len), 
+                           'depth' : deque([], maxlen=pack_len), 
+                           'segmentation' : deque([], maxlen=pack_len), 
+                           'tf' : deque([], maxlen=pack_len)}
+        self.__stereo_occupancy = {'rgb' : deque([], maxlen=pack_len), 
+                                                                      'depth' : deque([], maxlen=pack_len), 
+                                                                      'point_cloud' : deque([], maxlen=pack_len), 
+                                                                      'tf' : deque([], maxlen=pack_len)}        
+        self.__panoptic_occupancy = {'rgb' : deque([], maxlen=pack_len), 
+                                                                          'depth' : deque([], maxlen=pack_len), 
+                                                                          'segmentation' : deque([], maxlen=pack_len), 
+                                                                          'point_cloud' : deque([], maxlen=pack_len),
+                                                                          'tf' : deque([], maxlen=pack_len)}
+        
+    @property
+    def observation_space(self):
+        to_remove =  self.__getattribute__(self.observation_type).keys() ^ self.__observation_space.keys()
+        _ = [self.__observation_space.pop(k) for k in to_remove]
+        return spaces.Dict(self.__observation_space)
+        
+    @property
+    def rgb(self):
+        return self.__rgb
+    
+    @rgb.setter
+    def rgb(self, observation):
+        if not self.__rgb['rgb']:
+            self.__rgb['rgb'].append(observation['rgb'])
+            self.__rgb['tf'].append(observation['tf'])
+            self.__rgb['rgb'] = self.__rgb['rgb']*3
+            self.__rgb['tf'] = self.__rgb['tf']*3
             
-def make_observation_space(observation_type : str, camera_dim : str, _2d : bool = True):
-    return make_2d_observation_space(observation_type, camera_dim) if _2d else make_3d_observation_space(observation_type, camera_dim)
+        self.__rgb['rgb'].append(observation['rgb'])
+        self.__rgb['tf'].append(observation['tf'])
+        
+    @property
+    def stereo(self):
+        return self.__stereo
+    
+    @stereo.setter
+    def stereo(self, observation):
+        if not self.__stereo['rgb']:
+            self.__stereo['rgb'].append(observation['rgb'])
+            self.__stereo['depth'].append(observation['depth'])
+            self.__stereo['tf'].append(observation['tf'])
+            self.__stereo['rgb'] = self.__stereo['rgb']*3
+            self.__stereo['depth'] = self.__stereo['depth']*3
+            self.__stereo['tf'] = self.__stereo['tf']*3
+            
+        self.__stereo['rgb'].append(observation['rgb'])
+        self.__stereo['depth'].append(observation['depth'])
+        self.__stereo['tf'].append(observation['tf'])
+        
+    @property
+    def stereo_occupancy(self):
+        return self.__stereo_occupancy
+    
+    @stereo_occupancy.setter
+    def stereo_occupancy(self, observation):
+        if not self.__rgb['rgb']:
+            self.__stereo_occupancy['rgb'].append(observation['rgb'])
+            self.__stereo_occupancy['depth'].append(observation['depth'])
+            self.__stereo_occupancy['point_cloud'].append(observation['point_cloud'])
+            self.__stereo_occupancy['tf'].append(observation['tf'])
+            self.__stereo_occupancy['rgb'] = self.__stereo_occupancy['rgb']*3
+            self.__stereo_occupancy['depth'] = self.__stereo_occupancy['depth']*3
+            self.__stereo_occupancy['point_cloud'] = self.__stereo_occupancy['point_cloud']*3
+            self.__stereo_occupancy['tf'] = self.__stereo_occupancy['tf']*3
+            
+        self.__stereo_occupancy['rgb'].append(observation['rgb'])
+        self.__stereo_occupancy['depth'].append(observation['depth'])
+        self.__stereo_occupancy['point_cloud'].append(observation['point_cloud'])
+        self.__stereo_occupancy['tf'].append(observation['tf'])
+    
+        
+    @property
+    def panoptic(self):
+        return self.__panoptic
+    
+    @panoptic.setter
+    def panoptic(self, observation):
+        if not self.__panoptic['rgb']:
+            self.__panoptic['rgb'].append(observation['rgb'])
+            self.__panoptic['depth'].append(observation['depth'])
+            self.__panoptic['segmentation'].append(observation['segmentation'])
+            self.__panoptic['tf'].append(observation['tf'])
+            self.__panoptic['rgb'] = self.__panoptic['rgb']*3
+            self.__panoptic['depth'] = self.__panoptic['depth']*3
+            self.__panoptic['segmentation'] = self.__panoptic['segmentation']*3
+            self.__panoptic['tf'] = self.__panoptic['tf']*3
+            
+        self.__panoptic['rgb'].append(observation['rgb'])
+        self.__panoptic['depth'].append(observation['depth'])
+        self.__panoptic['segmentation'].append(observation['segmentation'])
+        self.__panoptic['tf'].append(observation['tf'])
+        
+    @property
+    def panoptic_occupancy(self):
+        return self.__panoptic_occupancy
+    
+    @panoptic_occupancy.setter
+    def panoptic_occupancy(self, observation):
+        if not self.__rgb['rgb']:
+            self.__panoptic_occupancy['rgb'].append(observation['rgb'])
+            self.__panoptic_occupancy['depth'].append(observation['depth'])
+            self.__panoptic_occupancy['segmentation'].append(observation['segmentation'])
+            self.__panoptic_occupancy['point_cloud'].append(observation['point_cloud'])
+            self.__panoptic_occupancy['tf'].append(observation['tf'])
+            self.__panoptic_occupancy['rgb'] = self.__panoptic_occupancy['rgb']*3
+            self.__panoptic_occupancy['depth'] = self.__panoptic_occupancy['depth']*3
+            self.__panoptic_occupancy['segmentation'] = self.__panoptic_occupancy['segmentation']*3
+            self.__panoptic_occupancy['point_cloud'] = self.__panoptic_occupancy['point_cloud']*3
+            self.__panoptic_occupancy['tf'] = self.__panoptic_occupancy['tf']*3
+            
+        self.__panoptic_occupancy['rgb'].append(observation['rgb'])
+        self.__panoptic_occupancy['depth'].append(observation['depth'])
+        self.__panoptic_occupancy['segmentation'].append(observation['segmentation'])
+        self.__panoptic_occupancy['point_cloud'].append(observation['point_cloud'])
+        self.__panoptic_occupancy['tf'].append(observation['tf'])
+        
+        
+    def packing(self, observation : dict):
+        self.__setattr__(self.observation_type, observation)
+        
+    def concat(self):
+        pack = self.__getattribute__(self.observation_type)
+        return dict(map(lambda k, obs : (k, np.concatenate(list(obs), axis=0)), pack.keys(), pack.values()))
+    
+    def __call__(self) -> dict:
+        return self.__getattribute__(self.observation_type)
+    
+    
 
 class PositionNBV(Env):
    
@@ -89,7 +218,9 @@ class PositionNBV(Env):
         
         vehicle = ActPosition(ip, 
                               vehicle_['name'], 
-                              vehicle_['camera']['name'], 
+                              vehicle_['camera']['name'],
+                              vehicle_['camera']['dim'],
+                              vehicle_['camera']['fov'], 
                               vehicle_['global_pose'], 
                               vehicle_['start_pose'],
                               observation)
@@ -137,12 +268,9 @@ class PositionNBV(Env):
         
     def __init__(self, ip : str, 
                  config : dict):
-        
-        rospy.init_node(f"gym-{config['name']}-{config['observation']}")
-
-        self.observation_space = make_observation_space(config['observation'], config['vehicle']['camera']['dim'])
-        self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float64)  
-        self.n_steps = 0
+        super(PositionNBV, self).__init__()
+        node = f"gym-{config['name']}-{config['observation']}"
+        rospy.init_node(node)
         
         self.domain = config['domain']
         self.vehicle, self.shadow = self.vs_start(ip, config)
@@ -151,9 +279,18 @@ class PositionNBV(Env):
         self.target_range = config['target_range']
         self.altitude_range = config['altitude_range']
         self.centroide = config['centroide']
-        self.markers = self.set_markers(config['markers']['name'], config['markers']['num'])
+        self.markers = config['markers']
         self.original_len = config['markers']['num']
+        self.len_markers = config['markers']['num']
         self.past_len = config['markers']['num']
+        
+        self.markers_need_to_visit = self.set_markers(self.markers['name'], self.markers['num'])
+        self.pack = StockPile(config['observation'], self.vehicle_cfg['camera']['dim'], 3)
+        self.max_episode_steps = config['max_episode_steps']
+        
+        self.observation_space = self.pack.observation_space
+        
+        self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
         
         self._start_pose()
         self._take_off()
@@ -196,8 +333,7 @@ class PositionNBV(Env):
         gimbal_pitch = normalize_value(gimbal_pitch_angle, -1, 1, gimbal_pitch_min, gimbal_pitch_max)
         
         return px, py, pz, yaw, gimbal_pitch
-    
-    
+     
     def _moveon(self, action):
         norm_action = self._normalize_action(action)
         self.vehicle.moveon(norm_action)
@@ -254,34 +390,31 @@ class PositionNBV(Env):
         
         x, y, z = wx + rx, wy + ry, wz + rz
         
-        return np.sqrt(x**2 + y**2 + z**2)
-        
+        return np.sqrt(x**2 + y**2 + z**2)       
 
     def _get_state(self):
-        observation = self.vehicle.get_observation()
-        #implemtents pack observation
         
         viewd_markers, distances = self.vehicle.simGetDetectedMeshesDistances(self.shadow['camera']['name'], ImageType.Scene,vehicle_name=self.shadow['name'])
         d = self._wshadow_distance()
         done = False
         reset_pose = False
         distance = 0
-        len_markers = self.past_len
+        self.len_markers = self.past_len
         if distances:
-            self.markers -= set(viewd_markers)
-            len_markers = len(self.markers)
+            self.markers_need_to_visit -= set(viewd_markers)
+            self.len_markers = len(self.markers_need_to_visit)
             
             if (d - min(distances)) < 30 or (d - max(distances)) > 120:
                 distance = 1
                 reset_pose = True
                 
-            if not len_markers or (self.original_len - len_markers) >= .97*self.original_len :
+            if not self.len_markers or (self.original_len - self.len_markers) >= .97*self.original_len :
                 done = True
                 
         else:
             reset_pose = True
         
-        return observation, len_markers, distance, reset_pose, done
+        return self._get_obs(), self.len_markers, distance, reset_pose, done, self._get_info()
     
     def _reward(self, len_markers, distance, reset_pose, done):
         if done:
@@ -298,19 +431,30 @@ class PositionNBV(Env):
         
         self.past_len = len_markers
         return self.original_len - len_markers, done
+    
+    def _get_obs(self):
+        observation = self.vehicle.get_observation()
+        self.pack.packing(observation)
+        return self.pack.concat()
+    
+    def _get_info(self):
+        info = f"Current markers lenght : {self.len_markers}"
+        return {'info' : info}
 
-    def reset(self):
+    def reset(self, seed= None, options= None):
+        seed = np.random.seed()
+        super().reset(seed=seed)
         
-        return self.observation_space
+        self._start_pose()
+        self.markers_need_to_visit = self.set_markers(self.markers['name'], self.markers['num']) 
+        
+        observation = self._get_obs()
+        info = self._get_info()
+        return observation, info
     
     def step(self, action):
         self._moveon(action)
-        observation, len_markers, distance, reset_pose, done = self._get_state()
+        observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
-        print(f'reward : {reward}')
         
-        if done:
-            self.reset() #reset of airsim
-            return observation, done
-     
-        return observation, done
+        return observation, reward, done, info

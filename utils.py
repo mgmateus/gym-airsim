@@ -66,6 +66,8 @@ def process_cfg(mode_ : str, env_ : str):
     
     svehicle_camera_dim = svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]['Width'],\
                           svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]['Height']  
+                          
+    svehicle_camera_fov = svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
     
     sshadow = settings['Vehicles'][svehicle_names[1]]
     sshadow_name = svehicle_names[1]
@@ -83,7 +85,7 @@ def process_cfg(mode_ : str, env_ : str):
     env['vehicle']['global_pose'] = [gx, gy, gz, groll, gpitch, gyaw]
     env['vehicle']['camera']['name'] = svehicle_camera_name
     env['vehicle']['camera']['dim'] = svehicle_camera_dim
-    
+    env['vehicle']['camera']['fov'] = svehicle_camera_fov
     
     env['shadow']['name'] = sshadow_name
     env['shadow']['global_pose'] = [gsx, gsy, gsz, gsroll, gspitch, gsyaw]

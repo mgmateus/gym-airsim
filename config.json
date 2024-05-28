@@ -3,7 +3,9 @@
         "train" : {
             "learning_rate" : 0.09,
             "epochs": 10,
-            "max_steps" : 1000000
+            "init_steps" : 4,
+            "max_steps" : 1000000,
+            "eval_freq" : 100000
         }
     },
     "envs" : {
@@ -27,7 +29,8 @@
                 "name" : "Cube",
                 "num" : 175
             },
-            "observation" : "stereo",
+            "observation" : "rgb",
+            "max_episode_steps" : 500,
             "space_observation_dim" : 3,
             "space_action_dim" : 5,
             "action_range" : {
