@@ -1,0 +1,16 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+-10 altitude : 0
+-20 altitude : 0
+63 altitude : -51.59506916999817
+-20 altitude : 0
+-20 altitude : 0
+-10 altitude : 0

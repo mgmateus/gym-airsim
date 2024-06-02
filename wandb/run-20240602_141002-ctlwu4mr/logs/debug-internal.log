@@ -1,0 +1,214 @@
+2024-06-02 14:10:02,908 INFO    StreamThr :59526 [internal.py:wandb_internal():85] W&B internal server running at pid: 59526, started at: 2024-06-02 14:10:02.907744
+2024-06-02 14:10:02,908 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status
+2024-06-02 14:10:02,909 INFO    WriterThread:59526 [datastore.py:open_for_write():87] open: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/run-ctlwu4mr.wandb
+2024-06-02 14:10:02,911 DEBUG   SenderThread:59526 [sender.py:send():378] send: header
+2024-06-02 14:10:02,922 DEBUG   SenderThread:59526 [sender.py:send():378] send: run
+2024-06-02 14:10:03,446 INFO    SenderThread:59526 [dir_watcher.py:__init__():211] watching files in: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files
+2024-06-02 14:10:03,446 INFO    SenderThread:59526 [sender.py:_start_run_threads():1123] run started: ctlwu4mr with start time 1717337402.907804
+2024-06-02 14:10:03,452 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: check_version
+2024-06-02 14:10:03,452 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: check_version
+2024-06-02 14:10:03,563 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: run_start
+2024-06-02 14:10:03,587 DEBUG   HandlerThread:59526 [system_info.py:__init__():26] System info init
+2024-06-02 14:10:03,587 DEBUG   HandlerThread:59526 [system_info.py:__init__():41] System info init done
+2024-06-02 14:10:03,587 INFO    HandlerThread:59526 [system_monitor.py:start():194] Starting system monitor
+2024-06-02 14:10:03,587 INFO    SystemMonitor:59526 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2024-06-02 14:10:03,587 INFO    HandlerThread:59526 [system_monitor.py:probe():214] Collecting system info
+2024-06-02 14:10:03,587 INFO    SystemMonitor:59526 [interfaces.py:start():188] Started cpu monitoring
+2024-06-02 14:10:03,588 INFO    SystemMonitor:59526 [interfaces.py:start():188] Started disk monitoring
+2024-06-02 14:10:03,588 INFO    SystemMonitor:59526 [interfaces.py:start():188] Started gpu monitoring
+2024-06-02 14:10:03,588 INFO    SystemMonitor:59526 [interfaces.py:start():188] Started memory monitoring
+2024-06-02 14:10:03,589 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:03,589 INFO    SystemMonitor:59526 [interfaces.py:start():188] Started network monitoring
+2024-06-02 14:10:03,589 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:03,667 DEBUG   HandlerThread:59526 [system_info.py:probe():150] Probing system
+2024-06-02 14:10:03,671 DEBUG   HandlerThread:59526 [system_info.py:_probe_git():135] Probing git
+2024-06-02 14:10:03,680 DEBUG   HandlerThread:59526 [system_info.py:_probe_git():143] Probing git done
+2024-06-02 14:10:03,680 DEBUG   HandlerThread:59526 [system_info.py:probe():198] Probing system done
+2024-06-02 14:10:03,680 DEBUG   HandlerThread:59526 [system_monitor.py:probe():223] {'os': 'Linux-5.15.0-105-generic-x86_64-with-glibc2.29', 'python': '3.8.10', 'heartbeatAt': '2024-06-02T14:10:03.667574', 'startedAt': '2024-06-02T14:10:02.904989', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': 'exec.py', 'codePathLocal': 'exec.py', 'codePath': 'exec.py', 'git': {'remote': 'https://github.com/mgmateus/gym-airsim.git', 'commit': 'f68fa4adc0be8cf2a0a3012fc73987e2687c6e9c'}, 'email': None, 'root': '/home/airsim/gym-airsim', 'host': '7a3d9eb3b18e', 'username': 'airsim', 'executable': '/usr/bin/python3', 'cpu_count': 8, 'cpu_count_logical': 8, 'cpu_freq': {'current': 4600.074375, 'min': 800.0, 'max': 4900.0}, 'cpu_freq_per_core': [{'current': 4600.034, 'min': 800.0, 'max': 4900.0}, {'current': 4600.117, 'min': 800.0, 'max': 4900.0}, {'current': 4600.163, 'min': 800.0, 'max': 4900.0}, {'current': 4599.999, 'min': 800.0, 'max': 4900.0}, {'current': 4600.303, 'min': 800.0, 'max': 4900.0}, {'current': 4600.008, 'min': 800.0, 'max': 4900.0}, {'current': 4600.034, 'min': 800.0, 'max': 4900.0}, {'current': 4600.033, 'min': 800.0, 'max': 4900.0}], 'disk': {'/': {'total': 530.7845458984375, 'used': 465.17909240722656}}, 'gpu': 'NVIDIA GeForce RTX 2080 SUPER', 'gpu_count': 1, 'gpu_devices': [{'name': 'NVIDIA GeForce RTX 2080 SUPER', 'memory_total': 8589934592}], 'memory': {'total': 31.272136688232422}}
+2024-06-02 14:10:03,680 INFO    HandlerThread:59526 [system_monitor.py:probe():224] Finished collecting system info
+2024-06-02 14:10:03,680 INFO    HandlerThread:59526 [system_monitor.py:probe():227] Publishing system info
+2024-06-02 14:10:03,681 INFO    HandlerThread:59526 [system_monitor.py:probe():229] Finished publishing system info
+2024-06-02 14:10:03,682 DEBUG   SenderThread:59526 [sender.py:send():378] send: files
+2024-06-02 14:10:03,682 INFO    SenderThread:59526 [sender.py:_save_file():1389] saving file wandb-metadata.json with policy now
+2024-06-02 14:10:03,852 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: python_packages
+2024-06-02 14:10:03,853 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: python_packages
+2024-06-02 14:10:03,853 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-02 14:10:03,853 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: stop_status
+2024-06-02 14:10:04,169 DEBUG   SenderThread:59526 [sender.py:send():378] send: telemetry
+2024-06-02 14:10:04,447 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_created():271] file/dir created: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/wandb-metadata.json
+2024-06-02 14:10:04,448 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_created():271] file/dir created: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/requirements.txt
+2024-06-02 14:10:04,490 INFO    wandb-upload_0:59526 [upload_job.py:push():130] Uploaded file /tmp/tmpfvv9j6z6wandb/fxcevwhw-wandb-metadata.json
+2024-06-02 14:10:05,590 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:05,590 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:07,591 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:07,591 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:07,994 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status_report
+2024-06-02 14:10:08,447 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_created():271] file/dir created: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:09,592 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:09,592 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:10,447 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:11,592 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:11,592 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:12,448 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:13,258 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status_report
+2024-06-02 14:10:13,593 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:13,593 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:14,448 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:15,593 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:15,593 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:16,449 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:17,594 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:17,594 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:18,435 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status_report
+2024-06-02 14:10:18,449 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:18,853 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: stop_status
+2024-06-02 14:10:18,853 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: stop_status
+2024-06-02 14:10:19,594 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:19,594 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:20,449 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:21,594 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:21,595 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:22,450 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:23,595 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:23,595 ERROR   disk      :59526 [interfaces.py:monitor():142] Failed to sample metric: not sure how to interpret line '   7       0 loop0 16 0 50 233 0 0 0 0 0 252 233 0 0 0 0 0 0\n'
+2024-06-02 14:10:23,605 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status_report
+2024-06-02 14:10:24,450 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:25,309 DEBUG   SenderThread:59526 [sender.py:send():378] send: exit
+2024-06-02 14:10:25,309 INFO    SenderThread:59526 [sender.py:send_exit():585] handling exit code: 0
+2024-06-02 14:10:25,309 INFO    SenderThread:59526 [sender.py:send_exit():587] handling runtime: 21
+2024-06-02 14:10:25,309 INFO    SenderThread:59526 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2024-06-02 14:10:25,310 INFO    SenderThread:59526 [sender.py:send_exit():593] send defer
+2024-06-02 14:10:25,310 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,310 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 0
+2024-06-02 14:10:25,310 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,310 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 0
+2024-06-02 14:10:25,310 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 1
+2024-06-02 14:10:25,310 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,310 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 1
+2024-06-02 14:10:25,310 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,310 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 1
+2024-06-02 14:10:25,310 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 2
+2024-06-02 14:10:25,310 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,310 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 2
+2024-06-02 14:10:25,310 INFO    HandlerThread:59526 [system_monitor.py:finish():203] Stopping system monitor
+2024-06-02 14:10:25,311 INFO    HandlerThread:59526 [interfaces.py:finish():200] Joined cpu monitor
+2024-06-02 14:10:25,311 INFO    HandlerThread:59526 [interfaces.py:finish():200] Joined disk monitor
+2024-06-02 14:10:25,311 DEBUG   SystemMonitor:59526 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2024-06-02 14:10:25,311 DEBUG   SystemMonitor:59526 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2024-06-02 14:10:25,311 DEBUG   SystemMonitor:59526 [system_monitor.py:_start():183] Publishing last batch of metrics
+2024-06-02 14:10:25,322 INFO    HandlerThread:59526 [interfaces.py:finish():200] Joined gpu monitor
+2024-06-02 14:10:25,322 INFO    HandlerThread:59526 [interfaces.py:finish():200] Joined memory monitor
+2024-06-02 14:10:25,322 INFO    HandlerThread:59526 [interfaces.py:finish():200] Joined network monitor
+2024-06-02 14:10:25,322 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,322 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 2
+2024-06-02 14:10:25,322 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 3
+2024-06-02 14:10:25,322 DEBUG   SenderThread:59526 [sender.py:send():378] send: stats
+2024-06-02 14:10:25,322 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,323 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 3
+2024-06-02 14:10:25,323 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,323 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 3
+2024-06-02 14:10:25,323 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 4
+2024-06-02 14:10:25,323 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,323 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 4
+2024-06-02 14:10:25,323 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,323 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 4
+2024-06-02 14:10:25,323 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 5
+2024-06-02 14:10:25,323 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,323 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 5
+2024-06-02 14:10:25,323 DEBUG   SenderThread:59526 [sender.py:send():378] send: summary
+2024-06-02 14:10:25,324 INFO    SenderThread:59526 [sender.py:_save_file():1389] saving file wandb-summary.json with policy end
+2024-06-02 14:10:25,324 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,324 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 5
+2024-06-02 14:10:25,324 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 6
+2024-06-02 14:10:25,324 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,324 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 6
+2024-06-02 14:10:25,324 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,324 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 6
+2024-06-02 14:10:25,327 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: status_report
+2024-06-02 14:10:25,451 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_created():271] file/dir created: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/wandb-summary.json
+2024-06-02 14:10:25,542 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 7
+2024-06-02 14:10:25,542 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:25,542 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 7
+2024-06-02 14:10:25,542 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:25,542 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 7
+2024-06-02 14:10:26,040 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 8
+2024-06-02 14:10:26,040 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:26,040 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 8
+2024-06-02 14:10:26,041 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:26,041 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 8
+2024-06-02 14:10:26,041 INFO    SenderThread:59526 [job_builder.py:build():432] Attempting to build job artifact
+2024-06-02 14:10:26,041 INFO    SenderThread:59526 [job_builder.py:_get_source_type():565] is repo sourced job
+2024-06-02 14:10:26,060 INFO    SenderThread:59526 [job_builder.py:build():541] adding wandb-job metadata file
+2024-06-02 14:10:26,106 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 9
+2024-06-02 14:10:26,106 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:26,106 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 9
+2024-06-02 14:10:26,107 DEBUG   SenderThread:59526 [sender.py:send():378] send: artifact
+2024-06-02 14:10:26,309 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-02 14:10:26,451 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:26,451 INFO    Thread-12 :59526 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/config.yaml
+2024-06-02 14:10:27,061 INFO    SenderThread:59526 [sender.py:send_artifact():1467] sent artifact job-https___github.com_mgmateus_gym-airsim.git_exec.py - {'id': 'QXJ0aWZhY3Q6ODU2MzM5NTcw', 'state': 'COMMITTED', 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjE4MDc5MTA2Mw==', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6ODU2MzM5NTcw', 'versionIndex': 2}}}
+2024-06-02 14:10:27,061 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:27,061 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 9
+2024-06-02 14:10:27,062 INFO    SenderThread:59526 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-06-02 14:10:27,451 INFO    SenderThread:59526 [dir_watcher.py:finish():388] scan: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [dir_watcher.py:finish():402] scan save: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/wandb-metadata.json wandb-metadata.json
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [dir_watcher.py:finish():402] scan save: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/wandb-summary.json wandb-summary.json
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [dir_watcher.py:finish():402] scan save: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/requirements.txt requirements.txt
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [dir_watcher.py:finish():402] scan save: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log output.log
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [dir_watcher.py:finish():402] scan save: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/config.yaml config.yaml
+2024-06-02 14:10:27,452 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 10
+2024-06-02 14:10:27,452 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: poll_exit
+2024-06-02 14:10:27,452 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:27,458 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 10
+2024-06-02 14:10:27,459 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:27,459 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 10
+2024-06-02 14:10:27,459 INFO    SenderThread:59526 [file_pusher.py:finish():169] shutting down file pusher
+2024-06-02 14:10:27,925 INFO    wandb-upload_0:59526 [upload_job.py:push():130] Uploaded file /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/requirements.txt
+2024-06-02 14:10:28,041 INFO    wandb-upload_1:59526 [upload_job.py:push():130] Uploaded file /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/wandb-summary.json
+2024-06-02 14:10:28,105 INFO    wandb-upload_3:59526 [upload_job.py:push():130] Uploaded file /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/config.yaml
+2024-06-02 14:10:28,193 INFO    wandb-upload_2:59526 [upload_job.py:push():130] Uploaded file /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/files/output.log
+2024-06-02 14:10:28,310 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-02 14:10:28,310 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: poll_exit
+2024-06-02 14:10:28,393 INFO    Thread-11 :59526 [sender.py:transition_state():613] send defer: 11
+2024-06-02 14:10:28,394 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:28,394 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 11
+2024-06-02 14:10:28,394 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:28,394 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 11
+2024-06-02 14:10:28,394 INFO    SenderThread:59526 [file_pusher.py:join():175] waiting for file pusher
+2024-06-02 14:10:28,394 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 12
+2024-06-02 14:10:28,394 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:28,394 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 12
+2024-06-02 14:10:28,394 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:28,394 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 12
+2024-06-02 14:10:28,394 INFO    SenderThread:59526 [file_stream.py:finish():601] file stream finish called
+2024-06-02 14:10:28,607 INFO    SenderThread:59526 [file_stream.py:finish():605] file stream finish is done
+2024-06-02 14:10:28,607 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 13
+2024-06-02 14:10:28,607 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:28,607 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 13
+2024-06-02 14:10:28,607 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:28,607 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 13
+2024-06-02 14:10:28,607 INFO    SenderThread:59526 [sender.py:transition_state():613] send defer: 14
+2024-06-02 14:10:28,607 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: defer
+2024-06-02 14:10:28,607 INFO    HandlerThread:59526 [handler.py:handle_request_defer():184] handle defer: 14
+2024-06-02 14:10:28,607 DEBUG   SenderThread:59526 [sender.py:send():378] send: final
+2024-06-02 14:10:28,607 DEBUG   SenderThread:59526 [sender.py:send():378] send: footer
+2024-06-02 14:10:28,607 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: defer
+2024-06-02 14:10:28,608 INFO    SenderThread:59526 [sender.py:send_request_defer():609] handle sender defer: 14
+2024-06-02 14:10:28,608 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-02 14:10:28,608 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: poll_exit
+2024-06-02 14:10:28,608 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: poll_exit
+2024-06-02 14:10:28,608 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: server_info
+2024-06-02 14:10:28,609 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: poll_exit
+2024-06-02 14:10:28,609 DEBUG   SenderThread:59526 [sender.py:send_request():405] send_request: server_info
+2024-06-02 14:10:28,610 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: get_summary
+2024-06-02 14:10:28,610 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: sampled_history
+2024-06-02 14:10:28,611 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: internal_messages
+2024-06-02 14:10:28,799 INFO    MainThread:59526 [wandb_run.py:_footer_history_summary_info():3994] rendering history
+2024-06-02 14:10:28,799 INFO    MainThread:59526 [wandb_run.py:_footer_history_summary_info():4026] rendering summary
+2024-06-02 14:10:28,800 INFO    MainThread:59526 [wandb_run.py:_footer_sync_info():3953] logging synced files
+2024-06-02 14:10:28,800 DEBUG   HandlerThread:59526 [handler.py:handle_request():158] handle_request: shutdown
+2024-06-02 14:10:28,800 INFO    HandlerThread:59526 [handler.py:finish():882] shutting down handler
+2024-06-02 14:10:29,609 INFO    WriterThread:59526 [datastore.py:close():296] close: /home/airsim/gym-airsim/wandb/run-20240602_141002-ctlwu4mr/run-ctlwu4mr.wandb
+2024-06-02 14:10:29,799 INFO    SenderThread:59526 [sender.py:finish():1545] shutting down sender
+2024-06-02 14:10:29,799 INFO    SenderThread:59526 [file_pusher.py:finish():169] shutting down file pusher
+2024-06-02 14:10:29,800 INFO    SenderThread:59526 [file_pusher.py:join():175] waiting for file pusher

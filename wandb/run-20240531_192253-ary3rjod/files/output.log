@@ -1,0 +1,44 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+cdmin 0.1098132517790873 - dmin : 2 - cdmax : 26.28979085733863 - dmax : 120
+reset_pose
+-10
+step - 1
+cdmin -23.144174032945557 - dmin : 2 - cdmax : 49.53128673750507 - dmax : 120
+88
+step - 2
+cdmin -30.883081726236924 - dmin : 2 - cdmax : 57.270825504962886 - dmax : 120
+97
+step - 3
+cdmin -46.37963319338087 - dmin : 2 - cdmax : 72.76050126820246 - dmax : 120
+108
+step - 4
+cdmin -61.87613344963847 - dmin : 2 - cdmax : 88.25009302926719 - dmax : 120
+119
+step - 5
+cdmin -85.14953158344633 - dmin : 2 - cdmax : 111.5090474706385 - dmax : 120
+129
+step - 6
+cdmin -92.24847139310077 - dmin : 2 - cdmax : 119.22906229139153 - dmax : 120
+136
+step - 7
+cdmin -114.05769570375742 - dmin : 2 - cdmax : 142.49745488316057 - dmax : 120
+reset_pose
+-10
+step - 8
+cdmin -127.93172352241163 - dmin : 2 - cdmax : 157.9913555187877 - dmax : 120
+reset_pose
+-10
+step - 9
+cdmin -143.3645990226878 - dmin : 2 - cdmax : 173.4855634260075 - dmax : 120
+reset_pose
+-10

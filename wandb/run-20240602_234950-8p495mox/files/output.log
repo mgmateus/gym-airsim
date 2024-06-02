@@ -1,0 +1,59 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-underwater-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+dominioooo - underwater
+step - 0
+dominioooo - underwater
+-10 altitude : -30
+step - 1
+dominioooo - underwater
+-10 altitude : -30
+step - 2
+79 altitude : -23.999999910593033
+step - 3
+0 altitude : -17.999999821186066
+step - 4
+0 altitude : -11.999999731779099
+step - 5
+0 altitude : -5.999999642372131
+step - 6
+dominioooo - underwater
+-20 altitude : -30
+step - 7
+dominioooo - underwater
+-10 altitude : -30
+step - 8
+dominioooo - underwater
+-10 altitude : -30
+step - 9
+dominioooo - underwater
+-10 altitude : -30
+step - 10
+0 altitude : -23.999999910593033
+step - 11
+0 altitude : -17.999999821186066
+step - 12
+0 altitude : -11.999999731779099
+step - 13
+0 altitude : -5.999999642372131
+step - 14
+dominioooo - underwater
+-20 altitude : -30
+step - 15
+0 altitude : -23.999999910593033
+step - 16
+0 altitude : -17.999999821186066
+step - 17
+0 altitude : -11.999999731779099
+step - 18
+0 altitude : -5.999999642372131
+step - 19
+dominioooo - underwater
+-20 altitude : -30

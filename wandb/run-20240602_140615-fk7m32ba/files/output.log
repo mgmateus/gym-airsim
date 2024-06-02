@@ -1,0 +1,37 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/core.py:311: UserWarning: [33mWARN: env.random_vehicle_pose to get variables from other wrappers is deprecated and will be removed in v1.0, to get this variable you can do `env.unwrapped.random_vehicle_pose` for environment variables or `env.get_wrapper_attr('random_vehicle_pose')` that will search the reminding wrappers.
+  logger.warn(
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+----------random pose----------
+[189.28083593219407, 300.1070289272517, 3] [0, -1.5707963267948966, -1.5707963267948966] boat_vehicle
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 0.7071067094802856,
+    'x_val': 1.9767986714214203e-07,
+    'y_val': -0.7071067690849304,
+    'z_val': 1.9767988135299674e-07},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': -10.59999942779541,
+    'z_val': 3.5}} <Pose> {   'orientation': <Quaternionr> {   'w_val': 0.49999991059303284,
+    'x_val': -0.4999999403953552,
+    'y_val': -0.4999999403953552,
+    'z_val': -0.4999999701976776},
+    'position': <Vector3r> {   'x_val': 189.2808380126953,
+    'y_val': 300.1070251464844,
+    'z_val': 3.0}}
+[189.28083593219407, -7752.992971072748, 3.0] [0, -1.5707963267948966, -1.5707963267948966] boat_shadow
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 0.7071067094802856,
+    'x_val': 1.9767988135299674e-07,
+    'y_val': -0.7071067690849304,
+    'z_val': 1.9767989556385146e-07},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': -8064.099609375,
+    'z_val': 3.5}} <Pose> {   'orientation': <Quaternionr> {   'w_val': 0.49999991059303284,
+    'x_val': -0.4999999403953552,
+    'y_val': -0.4999999403953552,
+    'z_val': -0.4999999701976776},
+    'position': <Vector3r> {   'x_val': 189.2808380126953,
+    'y_val': -7752.9931640625,
+    'z_val': 3.0}}

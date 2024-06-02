@@ -1,0 +1,46 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/core.py:311: UserWarning: [33mWARN: env.random_vehicle_pose to get variables from other wrappers is deprecated and will be removed in v1.0, to get this variable you can do `env.unwrapped.random_vehicle_pose` for environment variables or `env.get_wrapper_attr('random_vehicle_pose')` that will search the reminding wrappers.
+  logger.warn(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+cdmin 0.10987574592218152 - dmin : 2 - cdmax : 26.290020078427915 - dmax : 120
+reset_pose
+-10
+step - 1
+cdmin -15.386389115953534 - dmin : 2 - cdmax : 41.78108935583077 - dmax : 120
+87
+step - 2
+cdmin -30.883133434271258 - dmin : 2 - cdmax : 57.270793750170924 - dmax : 120
+96
+step - 3
+cdmin -46.37991308513119 - dmin : 2 - cdmax : 72.76061018617293 - dmax : 120
+108
+step - 4
+cdmin -69.64865578280296 - dmin : 2 - cdmax : 96.01506986435834 - dmax : 120
+117
+step - 5
+cdmin -77.37303178883212 - dmin : 2 - cdmax : 103.73992226722385 - dmax : 120
+126
+step - 6
+cdmin -92.2484640289149 - dmin : 2 - cdmax : 119.2294876295955 - dmax : 120
+134
+step - 7
+cdmin -114.05770577131261 - dmin : 2 - cdmax : 142.49748812983853 - dmax : 120
+reset_pose
+-10
+step - 8
+cdmin -127.93186494066595 - dmin : 2 - cdmax : 157.99152277543908 - dmax : 120
+reset_pose
+-10
+step - 9
+cdmin -143.364468771867 - dmin : 2 - cdmax : 173.48545574155742 - dmax : 120
+reset_pose
+-10

@@ -284,6 +284,7 @@ class PositionNBV(Env):
         self.len_markers = config['markers']['num']
         self.past_len = config['markers']['num']
         
+        self.vehicle.home_pose = [0,0,0,0,0,0]
         self.markers_need_to_visit = self.set_markers(self.markers['name'], self.markers['num'])
         self.pack = StockPile(config['observation'], self.vehicle_cfg['camera']['dim'], 3)
         self.max_episode_steps = config['max_episode_steps']
@@ -291,30 +292,36 @@ class PositionNBV(Env):
         self.observation_space = self.pack.observation_space
         
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
-        
-        self._start_pose()
-        self._take_off()
+
         
     def _start_pose(self):        
-        self.vehicle.set_start_pose()
-        self.vehicle.set_start_pose(self.shadow['name'])
+        # self.vehicle.moveon([0,0,-.5,0,0])
+        # self.vehicle.set_pose([0,0,0], [0,0,0])
+        # self.vehicle.set_pose([0,0,0], [0,0,0], self.shadow['name'])
+        print(f'dominioooo - {self.domain}')
+        if self.domain == "underwater":
+            self.vehicle.home_pose = [20,0,30,0,0,0]
+        self.vehicle.go_home()
+        # self.random_vehicle_pose()
         
-        if self.domain == 'aereo':
-            position, _= self.vehicle.get_start_pose()
-            position[1] -= 13 
-            position[2] = self.altitude_range[0]
-            self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
-            global_position = self.shadow['global_pose'][:3]
-            shadow_position, _= self.vehicle.get_pose(self.shadow['name'])
-            current_position = np.array(global_position) + np.array(shadow_position)
-            current_position = current_position.tolist()
-            current_position[1] -= 13 
-            current_position[2] = self.altitude_range[0]
-            self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+        
+        # if self.domain == 'aereo':
+        #     position, _= self.vehicle.get_start_pose()
+        #     position[1] -= 13 
+        #     position[2] = self.altitude_range[0]
+        #     self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            
+        #     global_position = self.shadow['global_pose'][:3]
+        #     shadow_position, _= self.vehicle.get_pose(self.shadow['name'])
+        #     current_position = np.array(global_position) + np.array(shadow_position)
+        #     current_position = current_position.tolist()
+        #     current_position[1] -= 13 
+        #     current_position[2] = self.altitude_range[0]
+        #     self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
             
     def _take_off(self):
         self.vehicle.take_off()
-        self.vehicle.take_off(self.shadow['name'])
+        self.vehicle.take_off(self.shadow['name'], True)
         
         return True
     
@@ -336,16 +343,17 @@ class PositionNBV(Env):
      
     def _moveon(self, action):
         norm_action = self._normalize_action(action)
+        # print(norm_action)
         self.vehicle.moveon(norm_action)
         
-        pose = self.vehicle.pose
-        self.vehicle.simSetVehiclePose(pose, ignore_collision=True, vehicle_name=self.shadow['name'])
+        # position, orientation = self.vehicle.get_pose()
+        # self.vehicle.set_pose(position, orientation, vehicle_name= self.shadow['name'])
         
-        self.vehicle.pgimbal(self.shadow['name'], self.shadow['camera']['name'])
+        # self.vehicle.pgimbal(self.shadow['name'], self.shadow['camera']['name'])
         
         return True
         
-    def _random_vehicle_pose(self, randoz_yaw : bool = False, randon_z : bool = False):
+    def random_vehicle_pose(self, randoz_yaw : bool = False, randon_z : bool = False):
         random.seed()
         axmin, axmax = self.action_range['x']
         aymin, aymax = self.action_range['y']
@@ -357,30 +365,35 @@ class PositionNBV(Env):
         
         px = random_choice((axmin - txmin, txmin), (txmax, txmax + axmax))
         py = random_choice((aymin - tymin, tymin), (tymax, tymax + aymax))
-        pz = zmin-3
+        pz = 0 if self.domain == 'aereo' else 6
         
 
         centroide_pose = self.vehicle.objectp2list(self.centroide)
-        tf = self.vehicle.tf()
+        tf = self.vehicle.tf_info
         vehicle_position = [px, py, tf[2]]
         vehicle_e_orientation = quaternion_to_euler(tf[3:])
         vehicle_pose = vehicle_position + vehicle_e_orientation
         
         
         yaw = theta(vehicle_pose, centroide_pose[:3])
-        self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw])
-        self.vehicle.set_start_pose([px, py, pz], [0, 0, yaw], self.shadow['name'])
+        self.vehicle.home_pose = [px, py, pz, 0, 0, yaw]
+        self.vehicle.set_pose([px, py, pz], [0, 0, yaw])
+        self.vehicle.set_pose([px, py, pz], [0, 0, yaw], self.shadow['name'])
+        
         
         if self.domain == 'aereo':
+            # print('----------random pose----------')
             position = [px, py, pz]
             position[1] -= 13 
-            position[2] = self.altitude_range[0]
-            self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            position[2] = zmin
+            past, current = self.vehicle.set_object_pose(position, [0, np.deg2rad(-90), 0], self.vehicle_cfg['base_name'])
+            # print(past, current)
             
             global_position = self.shadow['global_pose'][:3]
             current_position = np.array(global_position) + np.array(position)
             current_position = current_position.tolist()
-            self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+            past, current = self.vehicle.set_object_pose(current_position, [0, np.deg2rad(-90), 0], self.shadow['base_name'])
+            # print(past, current)
             
     def _wshadow_distance(self):
         wx, wy, wz, _, _, _ = self.shadow['global_pose']
@@ -400,11 +413,14 @@ class PositionNBV(Env):
         reset_pose = False
         distance = 0
         self.len_markers = self.past_len
+        if self.vehicle.altitude >= -4:
+           return self._get_obs(), self.len_markers, distance, True, done, self._get_info() 
         if distances:
             self.markers_need_to_visit -= set(viewd_markers)
             self.len_markers = len(self.markers_need_to_visit)
-            
-            if (d - min(distances)) < 30 or (d - max(distances)) > 120:
+            dmin, dmax = self.markers['d']
+            # print(f"cdmin {d - min(distances)} - dmin : {dmin} - cdmax : {max(distances) - d} - dmax : {dmax}")
+            if (abs(d - min(distances))) < dmin or abs(max(distances) - d) > dmax:
                 distance = 1
                 reset_pose = True
                 
@@ -421,6 +437,7 @@ class PositionNBV(Env):
             return self.original_len, done
         
         if reset_pose:
+            # self.random_vehicle_pose()
             self._start_pose()
             if distance:
                 return -10, done
@@ -456,5 +473,5 @@ class PositionNBV(Env):
         self._moveon(action)
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
-        
+        print(reward, f"altitude : {self.vehicle.altitude}")
         return observation, reward, done, info

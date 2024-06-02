@@ -1,0 +1,574 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 0.0,
+    'z_val': 1.1426963806152344}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 0.0,
+    'z_val': 1.172865390777588}}
+step - 0
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -5.357302665710449}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 0.0,
+    'z_val': 0.9062948226928711}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -4.212830543518066}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -4.212830543518066}}
+-10
+step - 1
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -3.03177547454834}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -3.045483350753784}}
+84
+step - 2
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 15.5,
+    'z_val': -5.597386360168457}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 15.5,
+    'z_val': -5.597386360168457}}
+89
+step - 3
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 23.25,
+    'z_val': -11.080620765686035}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 23.25,
+    'z_val': -11.104180335998535}}
+98
+step - 4
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 31.0,
+    'z_val': -16.974950790405273}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 31.0,
+    'z_val': -16.974950790405273}}
+108
+step - 5
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 38.75,
+    'z_val': -23.154653549194336}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 38.75,
+    'z_val': -23.178932189941406}}
+117
+step - 6
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 46.5,
+    'z_val': -29.077810287475586}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 46.5,
+    'z_val': -29.10210609436035}}
+127
+step - 7
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 54.25,
+    'z_val': -34.95353317260742}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 54.25,
+    'z_val': -34.95353317260742}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -44.769325256347656}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -44.79364013671875}}
+-10
+step - 8
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -44.344383239746094}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -44.34438705444336}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -51.70590591430664}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -51.70590591430664}}
+-10
+step - 9
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -50.79427719116211}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -50.79427719116211}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -57.98599624633789}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -57.98599624633789}}
+-10
+step - 10
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -57.268558502197266}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -57.268558502197266}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -64.50920104980469}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -64.50920104980469}}
+-10
+step - 11
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -63.91333770751953}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -63.91333770751953}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.83771514892578}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.86206817626953}}
+-10
+step - 12
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.43647003173828}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.43647003173828}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -77.48282623291016}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -77.48282623291016}}
+-10
+step - 13
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -76.78854370117188}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -76.78854370117188}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -84.1280517578125}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -84.15242767333984}}
+-10
+step - 14
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -83.36004638671875}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -83.36005401611328}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -90.43219757080078}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -90.45657348632812}}
+-10
+step - 15
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -89.83417510986328}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -89.85855102539062}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -98.15045928955078}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -98.15045928955078}}
+-10
+step - 16
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -96.35735321044922}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -96.35735321044922}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -104.7962646484375}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -104.7962646484375}}
+-10
+step - 17
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -102.85602569580078}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -102.85602569580078}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -111.32018280029297}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -111.32018280029297}}
+-10
+step - 18
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -109.4034652709961}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -109.4034652709961}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -118.08814239501953}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -118.08814239501953}}
+-10
+step - 19
+(0.0, 7.750000115483999, -6.000000089406967, 0.0, 0.0)
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -115.9022216796875}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -115.9022216796875}}
+reset_pose
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 155.0,
+    'z_val': -124.44110870361328}}
+<Pose> {   'orientation': <Quaternionr> {   'w_val': 1.0,
+    'x_val': -0.0,
+    'y_val': 0.0,
+    'z_val': 0.0},
+    'position': <Vector3r> {   'x_val': 0.0,
+    'y_val': 155.0,
+    'z_val': -124.44110870361328}}
+-10

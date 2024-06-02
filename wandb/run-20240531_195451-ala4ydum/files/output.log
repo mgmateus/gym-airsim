@@ -1,0 +1,85 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/core.py:311: UserWarning: [33mWARN: env.random_vehicle_pose to get variables from other wrappers is deprecated and will be removed in v1.0, to get this variable you can do `env.unwrapped.random_vehicle_pose` for environment variables or `env.get_wrapper_attr('random_vehicle_pose')` that will search the reminding wrappers.
+  logger.warn(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+cdmin 0.1097125339520062 - dmin : 2 - cdmax : 26.29024730162837 - dmax : 120
+reset_pose
+-10
+step - 1
+cdmin -23.14413566141866 - dmin : 2 - cdmax : 49.531245514293005 - dmax : 120
+79
+step - 2
+cdmin -38.64742730274884 - dmin : 2 - cdmax : 65.02768093357918 - dmax : 120
+93
+step - 3
+cdmin -46.372021896370825 - dmin : 2 - cdmax : 72.75926727604929 - dmax : 120
+96
+step - 4
+cdmin -69.65320491764032 - dmin : 2 - cdmax : 96.01967542592956 - dmax : 120
+105
+step - 5
+cdmin -77.357071932709 - dmin : 2 - cdmax : 103.73174681549062 - dmax : 120
+115
+step - 6
+cdmin -100.65987724876595 - dmin : 2 - cdmax : 127.01260270979219 - dmax : 120
+reset_pose
+-10
+step - 7
+cdmin -116.15080064425547 - dmin : 2 - cdmax : 142.49650839414244 - dmax : 120
+reset_pose
+-10
+step - 8
+cdmin -61.71687421841489 - dmin : 2 - cdmax : 88.11781383362359 - dmax : 120
+125
+step - 9
+cdmin -143.3757355530306 - dmin : 2 - cdmax : 173.49617565849894 - dmax : 120
+reset_pose
+-10
+step - 10
+cdmin -77.12801941566522 - dmin : 2 - cdmax : 103.52895578700736 - dmax : 120
+160
+step - 11
+cdmin -149.4611409572217 - dmin : 2 - cdmax : 183.6217511608038 - dmax : 120
+reset_pose
+-10
+step - 12
+cdmin -193.6511404840303 - dmin : 2 - cdmax : 219.96231985660415 - dmax : 120
+reset_pose
+-10
+step - 13
+cdmin -209.15031112346787 - dmin : 2 - cdmax : 235.45458256617803 - dmax : 120
+reset_pose
+-10
+step - 14
+cdmin -107.8950575214194 - dmin : 2 - cdmax : 134.29599518354644 - dmax : 120
+reset_pose
+-10
+step - 15
+cdmin -115.5749599934843 - dmin : 2 - cdmax : 141.97590124452563 - dmax : 120
+reset_pose
+-10
+step - 16
+cdmin -123.25026266770783 - dmin : 2 - cdmax : 149.65120461512925 - dmax : 120
+reset_pose
+-10
+step - 17
+cdmin -130.92105616370463 - dmin : 2 - cdmax : 157.32199485776164 - dmax : 120
+reset_pose
+-10
+step - 18
+cdmin -286.6405124745079 - dmin : 2 - cdmax : 312.910235887769 - dmax : 120
+reset_pose
+-10
+step - 19
+cdmin -302.13683423452403 - dmin : 2 - cdmax : 328.39964663491355 - dmax : 120
+reset_pose
+-10

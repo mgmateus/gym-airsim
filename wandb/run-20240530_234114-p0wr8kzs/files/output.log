@@ -1,0 +1,50 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+cdmin 0.11009051158816874 - dmin : 2 - cdmax : 26.29085065326035 - dmax : 120
+reset_pose
+Service call failed: service [/airsim_node/Shadow/takeoff] responded with an error: b'rpc::rpc_error during call'
+-10
+step - 1
+cdmin -15.392285191695919 - dmin : 2 - cdmax : 41.78632109499631 - dmax : 120
+86
+step - 2
+cdmin -30.889554919287548 - dmin : 2 - cdmax : 57.27686023714068 - dmax : 120
+97
+step - 3
+cdmin -46.385072680281155 - dmin : 2 - cdmax : 72.76669635275812 - dmax : 120
+107
+step - 4
+cdmin -61.88080846825869 - dmin : 2 - cdmax : 88.25598543006618 - dmax : 120
+114
+step - 5
+cdmin -85.16173404841993 - dmin : 2 - cdmax : 111.52034238489887 - dmax : 120
+123
+step - 6
+cdmin -100.66520265080726 - dmin : 2 - cdmax : 127.01693879301911 - dmax : 120
+reset_pose
+Service call failed: service [/airsim_node/Shadow/takeoff] responded with an error: b'rpc::rpc_error during call'
+-10
+step - 7
+cdmin -106.36933162266905 - dmin : 2 - cdmax : 134.72447141619614 - dmax : 120
+reset_pose
+Service call failed: service [/airsim_node/Shadow/takeoff] responded with an error: b'rpc::rpc_error during call'
+-10
+step - 8
+cdmin -120.24852787748569 - dmin : 2 - cdmax : 150.2090646556817 - dmax : 120
+reset_pose
+Service call failed: service [/airsim_node/Shadow/takeoff] responded with an error: b'rpc::rpc_error during call'
+-10
+step - 9
+cdmin -143.38141207446915 - dmin : 2 - cdmax : 173.50490693983102 - dmax : 120
+reset_pose
+Service call failed: service [/airsim_node/Shadow/takeoff] responded with an error: b'rpc::rpc_error during call'
+-10

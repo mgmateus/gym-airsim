@@ -27,16 +27,20 @@ if __name__ == "__main__":
     
     parser.add_argument('--mode', type= str, required=False, default='train', help='Execution mode.')
     parser.add_argument('--agent', type= str, required=False, default='curl', help='Agent class.')
-    parser.add_argument('--env', type= str, required=False, default='semisub-position-aereo', help='Gym environment name.')
+    parser.add_argument('--observation', type= str, required=False, default='rgb', help='Agent class.')
+    parser.add_argument('--env', type= str, required=False, default='eolic-position-aereo', help='Gym environment name.')
     parser.add_argument('--container_simulation', type= str, required=False, default='ue4', help='Docker container name to Unreal.')
     args = parser.parse_args()
     
+    if args.env == 'eolic-position-aereo':
+        sys.exit()
+    
     ip = container_ip(args.container_simulation)      
-    mode, env_config = process_cfg(args.mode, args.env) 
+    mode, env_config = process_cfg(args.mode, args.observation, args.env) 
     
     wandb.init(
         # set the wandb project where this run will be logged
-        project=f"{args.agent}-{env_config['name']}-{env_config['observation']}",
+        project=f"{args.agent}-{env_config['name']}-{args.observation}",
 
         # track hyperparameters and run metadata
         config= mode
@@ -44,17 +48,19 @@ if __name__ == "__main__":
     
     airsim = airsim_launch(ip)
     # wait to connect into airsim...
-    
+    # sys.exit()
     # # rtabmap = subprocess_launch(reconstruction)
     # # time.sleep(15)
-    # for i in range(10):
-    #     print(f"step - {i}")
-    #     action = np.array([0, 0, .1, 0, 0], dtype=np.float32)
-    #     env.step(action)
-    #     # env._random_vehicle_pose(True, True)
-    #     time.sleep(0.5)
-
-    # # os.killpg(rtabmap.pid, signal.SIGINT)
+    env = gym.make('gym-airsim/hybrid-position-nbv', ip=ip, config=env_config)
+    observation = env.reset()
+    for i in range(20):
+        print(f"step - {i}")
+        action = np.array([0, 0.05, .1, 0, 0], dtype=np.float32)
+        env.step(action)
+        time.sleep(0.5)
+    os.killpg(airsim.pid, signal.SIGINT)
+    sys.exit()
+    # os.killpg(rtabmap.pid, signal.SIGINT)
     
     
     #################################################################
@@ -63,7 +69,8 @@ if __name__ == "__main__":
     episode, episode_reward, done = 0, 0, True
     start_time = time.time()
     
-    for step in range(6):
+    
+    for step in range(10):
         # evaluate agent periodically
 
         if step % mode['eval_freq'] == 0:
@@ -93,6 +100,7 @@ if __name__ == "__main__":
         # sample action for data collection
         if step < mode['init_steps']:
             action = env.action_space.sample()
+            # action = [0,0,0,0,naction[-1]]
         else:
             # with utils.eval_mode(agent):
             #     action = agent.sample_action(obs)
@@ -116,3 +124,4 @@ if __name__ == "__main__":
         episode_step += 1
         
     os.killpg(airsim.pid, signal.SIGINT)
+    sys.exit()

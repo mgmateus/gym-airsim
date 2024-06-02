@@ -1,0 +1,50 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+cdmin -7.640510235154579 - dmin : 2 - cdmax : 34.03355772541636 - dmax : 18
+reset_pose
+-10
+step - 1
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+cdmin -15.233526457139305 - dmin : 2 - cdmax : 41.626911332797135 - dmax : 18
+reset_pose
+-10
+step - 2
+cdmin -38.46166013236325 - dmin : 2 - cdmax : 64.84093641862091 - dmax : 18
+reset_pose
+-10
+step - 3
+cdmin -53.83741936055685 - dmin : 2 - cdmax : 80.20980602473628 - dmax : 18
+reset_pose
+-10
+step - 4
+cdmin -69.20954295911179 - dmin : 2 - cdmax : 95.57503567249023 - dmax : 18
+reset_pose
+-10
+step - 5
+cdmin -76.05082479478551 - dmin : 2 - cdmax : 102.41854488798344 - dmax : 18
+reset_pose
+-10
+step - 6
+cdmin -100.01798095866161 - dmin : 2 - cdmax : 126.36967723587986 - dmax : 18
+reset_pose
+-10
+step - 7
+cdmin -115.44304523362098 - dmin : 2 - cdmax : 141.78784010913296 - dmax : 18
+reset_pose
+-10
+step - 8
+cdmin -119.58097745049508 - dmin : 2 - cdmax : 148.00094847184027 - dmax : 18
+reset_pose
+-10
+step - 9
+cdmin -142.25500941072642 - dmin : 2 - cdmax : 172.37864384435943 - dmax : 18
+reset_pose
+-10

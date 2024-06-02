@@ -1,0 +1,50 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-semisub-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+step - 0
+dmin 7.838624811968657 - dmax : 18.552747443518456
+reset_pose
+-10
+step - 1
+dmin 7.845072657163655 - dmax : 18.54809030659908
+reset_pose
+-10
+step - 2
+dmin 7.85053723625424 - dmax : 18.538363827884496
+reset_pose
+-10
+step - 3
+dmin 7.85603762795472 - dmax : 18.526819408351002
+reset_pose
+-10
+step - 4
+dmin 7.86233379371879 - dmax : 18.514165287186188
+reset_pose
+-10
+step - 5
+dmin 7.866328423041523 - dmax : 18.502791479230837
+reset_pose
+-10
+step - 6
+dmin 7.818351842811353 - dmax : 18.530499755572237
+reset_pose
+-10
+step - 7
+dmin 8.574069335217246 - dmax : 18.527173308105375
+reset_pose
+-10
+step - 8
+dmin 11.540480006381586 - dmax : 18.523380353771245
+reset_pose
+-10
+step - 9
+dmin 11.605033934131825 - dmax : 18.52045837740752
+reset_pose
+-10

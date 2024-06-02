@@ -1,0 +1,2 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-semisub-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)

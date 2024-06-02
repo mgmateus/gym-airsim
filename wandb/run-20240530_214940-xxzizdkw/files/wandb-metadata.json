@@ -1,0 +1,88 @@
+{
+    "os": "Linux-5.15.0-105-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2024-05-30T21:49:41.139521",
+    "startedAt": "2024-05-30T21:49:40.391210",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "exec.py",
+    "codePathLocal": "exec.py",
+    "codePath": "exec.py",
+    "git": {
+        "remote": "https://github.com/mgmateus/gym-airsim.git",
+        "commit": "f68fa4adc0be8cf2a0a3012fc73987e2687c6e9c"
+    },
+    "email": null,
+    "root": "/home/airsim/gym-airsim",
+    "host": "7a3d9eb3b18e",
+    "username": "airsim",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 4600.050125,
+        "min": 800.0,
+        "max": 4900.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4600.027,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4599.999,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.081,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.06,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.048,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.014,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.054,
+            "min": 800.0,
+            "max": 4900.0
+        },
+        {
+            "current": 4600.057,
+            "min": 800.0,
+            "max": 4900.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 530.7845458984375,
+            "used": 464.54418182373047
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 2080 SUPER",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 2080 SUPER",
+            "memory_total": 8589934592
+        }
+    ],
+    "memory": {
+        "total": 31.272136688232422
+    }
+}

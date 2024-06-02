@@ -1,0 +1,184 @@
+/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node(node)
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/core.py:311: UserWarning: [33mWARN: env.random_vehicle_pose to get variables from other wrappers is deprecated and will be removed in v1.0, to get this variable you can do `env.unwrapped.random_vehicle_pose` for environment variables or `env.get_wrapper_attr('random_vehicle_pose')` that will search the reminding wrappers.
+  logger.warn(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:213: DeprecationWarning: [33mWARN: Core environment is written in old step API which returns one bool instead of two. It is recommended to rewrite the environment with new step API. 
+  logger.deprecation(
+/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `step()` method is not within the observation space.
+  logger.warn(f"{pre} is not within the observation space.")
+Connected!
+Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
+step - 0
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -4.857235908508301}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 7.75,
+    'z_val': -4.857235908508301}
+reset_pose
+-10
+step - 1
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 15.5,
+    'z_val': -10.8572359085083}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 15.5,
+    'z_val': -10.8572359085083}
+79
+step - 2
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 23.25,
+    'z_val': -16.857236862182617}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 23.25,
+    'z_val': -16.857236862182617}
+93
+step - 3
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 31.0,
+    'z_val': -22.857236862182617}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 31.0,
+    'z_val': -22.857236862182617}
+96
+step - 4
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 38.75,
+    'z_val': -28.857236862182617}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 38.75,
+    'z_val': -28.857236862182617}
+105
+step - 5
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 46.5,
+    'z_val': -34.857234954833984}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 46.5,
+    'z_val': -34.857234954833984}
+115
+step - 6
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 54.25,
+    'z_val': -40.857234954833984}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 54.25,
+    'z_val': -40.857234954833984}
+reset_pose
+-10
+step - 7
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -46.857234954833984}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 62.0,
+    'z_val': -46.857234954833984}
+124
+step - 8
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -52.857234954833984}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 69.75,
+    'z_val': -52.857234954833984}
+reset_pose
+-10
+step - 9
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -58.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 77.5,
+    'z_val': -58.85723876953125}
+152
+step - 10
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -64.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 85.25,
+    'z_val': -64.85723876953125}
+reset_pose
+-10
+step - 11
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 93.0,
+    'z_val': -70.85723876953125}
+170
+step - 12
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -76.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 100.75,
+    'z_val': -76.85723876953125}
+reset_pose
+-10
+step - 13
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -82.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 108.5,
+    'z_val': -82.85723876953125}
+reset_pose
+-10
+step - 14
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -88.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 116.25,
+    'z_val': -88.85723876953125}
+reset_pose
+-10
+step - 15
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -94.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 124.0,
+    'z_val': -94.85723876953125}
+reset_pose
+-10
+step - 16
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -100.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 131.75,
+    'z_val': -100.85723876953125}
+reset_pose
+-10
+step - 17
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -106.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 139.5,
+    'z_val': -106.85723876953125}
+reset_pose
+-10
+step - 18
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -112.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 147.25,
+    'z_val': -112.85723876953125}
+reset_pose
+-10
+step - 19
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 155.0,
+    'z_val': -118.85723876953125}
+<Vector3r> {   'x_val': 0.0,
+    'y_val': 155.0,
+    'z_val': -118.85723876953125}
+reset_pose
+-10

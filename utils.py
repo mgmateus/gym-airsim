@@ -17,7 +17,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
 
 from airsim_base.types import ImageType
-from ros_helper import ActPosition
 
 def json_content(path : str):
     with open(path, 'r') as file:
@@ -49,7 +48,7 @@ def subprocess_launch(cmd : str):
     return launch
 
 
-def process_cfg(mode_ : str, env_ : str):
+def process_cfg(mode_ : str, observation_ : str, env_ : str):
     settings_path = os.path.abspath(__file__).replace('utils.py', 'settings/settings.json')
     config_path = os.path.abspath(__file__).replace('utils.py', 'config.json')
     
@@ -76,9 +75,11 @@ def process_cfg(mode_ : str, env_ : str):
     sshadow_camera_name = list(sshadow['Cameras'].keys())[0]
     sshadow_camera_dim = sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Width'],\
                           sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Height']
+    sshadow_camera_fov = sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
                           
     mode = config['mode'][mode_]                      
     env = config['envs'][env_]
+    env['observation'] = observation_ 
     
     env['name'] = env_
     env['vehicle']['name'] = svehicle_name
@@ -91,6 +92,7 @@ def process_cfg(mode_ : str, env_ : str):
     env['shadow']['global_pose'] = [gsx, gsy, gsz, gsroll, gspitch, gsyaw]
     env['shadow']['camera']['name'] = sshadow_camera_name
     env['shadow']['camera']['dim'] = sshadow_camera_dim
+    env['shadow']['camera']['fov'] = sshadow_camera_fov
     
     return mode, env
 
