@@ -9,16 +9,23 @@
         }
     },
     "envs" : {
-        "eolic-position-aereo" : {
+        "eolic-aereo-position" : {
             "vehicle" : {
-                "start_pose" : [0,0,0,0,0,0],
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 "camera" : {},
-                "base_name" : "boat_vehicle"
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3.0
+                },
+                "altitude" : -1.0
             },
             "shadow" : {
-                "start_pose" : [0,0,0,0,0,0],
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 "camera" : {},
-                "base_name" : "boat_shadow"
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3.0
+                }
             },
             "domain" : "aereo",
             "markers" : {
@@ -40,26 +47,32 @@
                 "x" : [50, 170],
                 "y" : [50, 170]
             },
-            "altitude_range" : [3, 60],
             "centroide" : "centroide"
 
         },
-        "eolic-position-underwater" : {
+        "eolic-underwater-position" : {
             "vehicle" : {
-                "start_pose" : [0,0,0,0,0,0],
+                "start_pose" : [70.0, 0.0, 30.0, 0.0, 0.0, 0.0],
                 "camera" : {},
-                "base_name" : "boat_vehicle"
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3
+                },
+                "altitude" : [-30, -6]
             },
             "shadow" : {
-                "start_pose" : [0,0,0,0,0,0],
+                "start_pose" : [70.0, 0.0, 30.0, 0.0, 0.0, 0.0],
                 "camera" : {},
-                "base_name" : "boat_shadow"
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3
+                }
             },
             "domain" : "underwater",
             "markers" : {
                 "name" : "Sphere",
                 "num" : 106,
-                "d" : [2, 120]   
+                "d" : [0.5, 120]   
             },
             "max_episode_steps" : 500,
             "space_observation_dim" : 3,
@@ -75,7 +88,6 @@
                 "x" : [50, 170],
                 "y" : [50, 170]
             },
-            "altitude_range" : [3, 60],
             "centroide" : "centroide"
 
         },

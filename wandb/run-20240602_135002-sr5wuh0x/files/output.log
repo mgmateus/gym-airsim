@@ -1,9 +1,0 @@
-/home/airsim/gym-airsim/environments.py:273: UserWarning: 'gym-eolic-position-aereo-rgb' is not a legal ROS base name. This may cause problems with other ROS tools.
-  rospy.init_node(node)
-/home/airsim/.local/lib/python3.8/site-packages/gymnasium/utils/passive_env_checker.py:159: UserWarning: [33mWARN: The obs returned by the `reset()` method is not within the observation space.
-  logger.warn(f"{pre} is not within the observation space.")
-/home/airsim/.local/lib/python3.8/site-packages/gymnasium/core.py:311: UserWarning: [33mWARN: env.random_vehicle_pose to get variables from other wrappers is deprecated and will be removed in v1.0, to get this variable you can do `env.unwrapped.random_vehicle_pose` for environment variables or `env.get_wrapper_attr('random_vehicle_pose')` that will search the reminding wrappers.
-  logger.warn(
-Connected!
-Client Ver:1 (Min Req: 1), Server Ver:1 (Min Req: 1)
-----------random pose----------
