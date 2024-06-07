@@ -16,7 +16,7 @@ from numpy.typing import NDArray
 from typing import List, Tuple
 from gymnasium import Env, spaces
 
-from utils import container_ip, airsim_launch
+from .utils import container_ip, parse_cfg, airsim_launch
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
@@ -28,6 +28,9 @@ def normalize_value(x, min_val, max_val, a, b):
     return ((x - min_val) / (max_val - min_val)) * (b - a) + a
 
 class ObservationSpace:
+    @staticmethod
+    def resize_img(img : NDArray):
+        return cv2.resize(img.copy(), (100, 100), interpolation = cv2.INTER_AREA)
     
     def __init__(self, observation_type : str , image_dim : tuple, pack_len : int) -> None:
         self.observation_type = observation_type
@@ -72,12 +75,12 @@ class ObservationSpace:
     @rgb.setter
     def rgb(self, observation):
         if not self.__rgb['rgb']:
-            self.__rgb['rgb'].append(observation['rgb'])
+            self.__rgb['rgb'].append(self.resize_img(observation['rgb']))
             self.__rgb['tf'].append(observation['tf'])
             self.__rgb['rgb'] = self.__rgb['rgb']*3
             self.__rgb['tf'] = self.__rgb['tf']*3
             
-        self.__rgb['rgb'].append(observation['rgb'])
+        self.__rgb['rgb'].append(self.resize_img(observation['rgb']))
         self.__rgb['tf'].append(observation['tf'])
         
     @property
@@ -183,11 +186,11 @@ class PointOfView:
         m = m + [f"{markers['name']}{i}" for i in range(1, markers['num']+1)]
         return set(m)
     
-    def __init__(self, ue4 : str, config : dict, node : str):
+    def __init__(self, ue4 : str, config : dict, node : str):        
+        rospy.init_node(node)
         ip = container_ip(ue4)
         self.__airsim = airsim_launch(ip)
         
-        rospy.init_node(node)
         self.__action_range = config['action_range']
         self.__target_range = config['simulation']['target_range']
         self.__centroide = config['simulation']['centroide']
@@ -201,8 +204,10 @@ class PointOfView:
         
         self.pov.set_detection(self.__markers['name'])
         
-        
-        
+    @property
+    def airsim(self):
+        return self.__airsim    
+    
     @property
     def action_range(self):
         return self.__action_range
@@ -236,8 +241,9 @@ class PointOfView:
         return px, py, pz, yaw, gimbal_pitch
 
 class AereoPointOfView(PointOfView, Env):
-    def __init__(self, ue4: str, config: dict, node : str):
-        PointOfView.__init__(self, ue4, config, node)
+    def __init__(self, ue4: str, env_name : str, observation : str):
+        config = parse_cfg(env_name, observation)
+        PointOfView.__init__(self, ue4, config, env_name)
         Env.__init__(self)
         
         self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
@@ -329,12 +335,13 @@ class AereoPointOfView(PointOfView, Env):
         return observation, reward, done, info
     
     def close(self):
-        os.killpg(self.__airsim, signal.SIGINT)
+        os.killpg(self.airsim, signal.SIGINT)
         sys.exit()  
     
 class UnderwaterPointOfView(PointOfView, Env):
-    def __init__(self, ue4: str, config: dict, node : str):
-        PointOfView.__init__(self, ue4, config, node)
+    def __init__(self, ue4: str, env_name : str, observation : str):
+        config = parse_cfg(env_name, observation)
+        PointOfView.__init__(self, ue4, config, env_name)
         Env.__init__(self)
         
         self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
@@ -425,5 +432,5 @@ class UnderwaterPointOfView(PointOfView, Env):
         return observation, reward, done, info
     
     def close(self):
-        os.killpg(self.__airsim, signal.SIGINT)
+        os.killpg(self.airsim, signal.SIGINT)
         sys.exit() 
