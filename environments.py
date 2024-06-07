@@ -4,6 +4,7 @@ import math
 import os
 import rospy
 import random
+import signal
 import sys
 import time
 
@@ -15,6 +16,7 @@ from numpy.typing import NDArray
 from typing import List, Tuple
 from gymnasium import Env, spaces
 
+from utils import container_ip, airsim_launch
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
@@ -181,9 +183,11 @@ class PointOfView:
         m = m + [f"{markers['name']}{i}" for i in range(1, markers['num']+1)]
         return set(m)
     
-    def __init__(self, ip : str, config : dict, node : str):
-        rospy.init_node(node)
+    def __init__(self, ue4 : str, config : dict, node : str):
+        ip = container_ip(ue4)
+        self.__airsim = airsim_launch(ip)
         
+        rospy.init_node(node)
         self.__action_range = config['action_range']
         self.__target_range = config['simulation']['target_range']
         self.__centroide = config['simulation']['centroide']
@@ -232,8 +236,8 @@ class PointOfView:
         return px, py, pz, yaw, gimbal_pitch
 
 class AereoPointOfView(PointOfView, Env):
-    def __init__(self, ip: str, config: dict, node : str):
-        PointOfView.__init__(self, ip, config, node)
+    def __init__(self, ue4: str, config: dict, node : str):
+        PointOfView.__init__(self, ue4, config, node)
         Env.__init__(self)
         
         self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
@@ -324,9 +328,13 @@ class AereoPointOfView(PointOfView, Env):
         self.current_step += 1
         return observation, reward, done, info
     
+    def close(self):
+        os.killpg(self.__airsim, signal.SIGINT)
+        sys.exit()  
+    
 class UnderwaterPointOfView(PointOfView, Env):
-    def __init__(self, ip: str, config: dict, node : str):
-        PointOfView.__init__(self, ip, config, node)
+    def __init__(self, ue4: str, config: dict, node : str):
+        PointOfView.__init__(self, ue4, config, node)
         Env.__init__(self)
         
         self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
@@ -415,3 +423,7 @@ class UnderwaterPointOfView(PointOfView, Env):
         reward, done = self._reward(len_markers, distance, reset_pose, done)
         self.current_step += 1
         return observation, reward, done, info
+    
+    def close(self):
+        os.killpg(self.__airsim, signal.SIGINT)
+        sys.exit() 

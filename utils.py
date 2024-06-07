@@ -6,23 +6,6 @@ import time
 def json_content(path : str):
     with open(path, 'r') as file:
         return json.load(file)
-    
-def parse_setup_env(setup_env : dict):
-    ip = container_ip(setup_env['ue4_container']) if setup_env['ue4_container'] else setup_env['ue4_container']
-    cfg = parse_cfg(setup_env['env'], setup_env['observation'])
-    env_name = setup_env['env']
-    
-    return ip, cfg, env_name
-
-def parse_setup_agent(setup_agent : dict):
-    start_step = setup_agent['start_step']
-    steps = setup_agent['steps']
-    eval_freq = setup_agent['eval_freq']
-    num_eval_episodes = setup_agent['num_eval_episodes']
-    agent = setup_agent['agent']
-    replay_buffer = setup_agent['replay_buffer']
-    
-    return start_step, steps, eval_freq, num_eval_episodes, agent, replay_buffer
 
 def parse_cfg(env_ : str, observation_ : str):
     settings_path = os.path.abspath(__file__).replace('utils.py', 'settings/settings.json')
@@ -105,8 +88,8 @@ def airsim_launch(ip : str):
     time.sleep(4)
     return s
 
-def rtabmap_launch(vehicle_name : str, camera_name : str):
-    launch = f"roslaunch rtabmap_launch rtabmap.launch delete_db_on_start:=true rgb_topic:=/airsim_node/{vehicle_name}/{camera_name}/Scene \
+def rtabmap_launch(vehicle_name : str, camera_name : str, db_path : str):
+    launch = f"roslaunch rtabmap_launch rtabmap.launch rtabmap_args:=--delete_db_on_start database_path:={db_path} rgb_topic:=/airsim_node/{vehicle_name}/{camera_name}/Scene \
                         depth_topic:=/airsim_node/{vehicle_name}/{camera_name}/DepthPerspective \
                         camera_info_topic:=/airsim_node/{vehicle_name}/{camera_name}/Scene/camera_info \
                         odom_topic:=/airsim_node/{vehicle_name}/odom_local_ned \
