@@ -1,0 +1,163 @@
+{
+    "eolic-aereo-point-of-view" : {
+        "domain_name" : "eolic-aereo",
+        "task_name" : "point-of-view",
+        "observation_stack" : 3,
+        "max_episode_steps" : 5,
+        "space_observation_dim" : 3,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "markers" : {
+            "name" : "Cube",
+            "num" : 560,
+            "d" : [2, 120]   
+        },
+        "simulation" : {
+            "vehicle" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3.0
+                },
+                "altitude" : -1.0
+            },
+            "shadow" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3.0
+                }
+            },
+            "target_range" : {
+                "x" : [50, 170],
+                "y" : [50, 170]
+            },
+            "centroide" : "centroide"
+        }
+    },
+    "eolic-underwater-point-of-view" : {
+        "domain_name" : "eolic-underwater",
+        "task_name" : "point-of-view",
+        "observation_stack" : 3,
+        "max_episode_steps" : 500,
+        "space_observation_dim" : 3,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "markers" : {
+            "name" : "Sphere",
+            "num" : 106,
+            "d" : [0.5, 120]   
+        },
+        "simulation" : {
+            "vehicle" : {
+                "start_pose" : [70.0, 0.0, 30.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3.0
+                },
+                "altitude" : [-30, -6]
+            },
+            "shadow" : {
+                "start_pose" : [70.0, 0.0, 30.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3.0
+                }
+            },
+            "target_range" : {
+                "x" : [50, 170],
+                "y" : [50, 170]
+            },
+            "centroide" : "centroide"
+        }
+    },
+    "semisub-position-underwater" : {
+        "vehicle" : {
+            "start_pose" : [0,0,0,0,0,0],
+            "camera" : {
+
+            },
+            "base_name" : "boat_vehicle"
+        },
+        "shadow" : {
+            "start_pose" : [0,0,0,0,0,0],
+            "camera" : {
+                
+            },
+            "base_name" : "boat_shadow"
+        },
+        "domain" : "underwater",
+        "markers" : {
+            "name" : "Sphere",
+            "num" : 105
+        },
+        "max_episode_steps" : 500,
+        "space_observation_dim" : 3,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "target_range" : {
+            "x" : [50, 170],
+            "y" : [50, 170]
+        },
+        "altitude_range" : [9, 60],
+        "centroide" : "centroide"
+
+    },
+    "semisub-position-aereo" : {
+        "vehicle" : {
+            "start_pose" : [0,0,0,0,0,0],
+            "camera" : {},
+            "base_name" : "boat_vehicle"
+        },
+        "shadow" : {
+            "start_pose" : [0,0,0,0,0,0],
+            "camera" : {},
+            "base_name" : "boat_shadow"
+        },
+        "domain" : "aereo",
+        "markers" : {
+            "name" : "Cube",
+            "num" : 175,
+            "d" : [30, 120]
+        },
+        "max_episode_steps" : 500,
+        "space_observation_dim" : 3,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "target_range" : {
+            "x" : [50, 170],
+            "y" : [50, 170]
+        },
+        "altitude_range" : [9, 60],
+        "centroide" : "centroide"
+
+    }
+}

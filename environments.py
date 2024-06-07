@@ -174,7 +174,7 @@ class ObservationSpace:
     def __call__(self) -> dict:
         return self.__getattribute__(self.observation_type)
     
-class Position:
+class PointOfView:
     @staticmethod
     def set_markers(markers : dict):
         m = [markers['name']]
@@ -185,17 +185,17 @@ class Position:
         rospy.init_node(node)
         
         self.__action_range = config['action_range']
-        self.__target_range = config['target_range']
-        self.__centroide = config['centroide']
+        self.__target_range = config['simulation']['target_range']
+        self.__centroide = config['simulation']['centroide']
         self.__markers = config['markers']
         
-        self.nbv = DualActPose(ip, config['vehicle'], config['shadow'], config['observation'])
+        self.pov = DualActPose(ip, config['simulation']['vehicle'], config['simulation']['shadow'], config['observation'])
         self.original_len = self.__markers['num']
         self.len_markers = self.__markers['num']
         self.past_len = self.__markers['num']
         self.markers_need_to_visit = self.set_markers(self.__markers)
         
-        self.nbv.set_detection(self.__markers['name'])
+        self.pov.set_detection(self.__markers['name'])
         
         
         
@@ -231,18 +231,19 @@ class Position:
         
         return px, py, pz, yaw, gimbal_pitch
 
-class AereoPositionNBV(Position, Env):
+class AereoPointOfView(PointOfView, Env):
     def __init__(self, ip: str, config: dict, node : str):
-        Position.__init__(self, ip, config, node)
+        PointOfView.__init__(self, ip, config, node)
         Env.__init__(self)
         
-        self.pack = ObservationSpace(config['observation'], config['vehicle']['camera']['dim'], 3)
+        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
         self.observation_space = self.pack.observation_space
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
         self.max_episode_steps = config['max_episode_steps']
+        self.current_step = 0
         
     def _get_obs(self):
-        observation = self.nbv.observation
+        observation = self.pov.observation
         self.pack.packing(observation)
         return self.pack.concat()
     
@@ -252,13 +253,13 @@ class AereoPositionNBV(Position, Env):
     
     def _get_state(self):
         
-        viewd_markers, distances = self.nbv.detections()
-        d = self.nbv.detection_distance()
+        viewd_markers, distances = self.pov.detections()
+        d = self.pov.detection_distance()
         done = False
         reset_pose = False
         distance = 0
         self.len_markers = self.past_len
-        # if self.nbv.altitude <= self.nbv.altitude_min:
+        # if self.pov.altitude <= self.pov.altitude_min:
         #     return self._get_obs(), self.len_markers, distance, True, done, self._get_info() 
        
         if distances:
@@ -279,17 +280,20 @@ class AereoPositionNBV(Position, Env):
         return self._get_obs(), self.len_markers, distance, reset_pose, done, self._get_info()
     
     def reset_random(self):
-        pose = self.nbv.random_pose(self.action_range['x'], self.action_range['y'], self.target_range['x'], self.target_range['y'], self.centroide)
-        self.nbv.random_base_pose(pose)
-        self.nbv.home = pose
-        self.nbv.go_home()
+        pose = self.pov.random_pose(self.action_range['x'], self.action_range['y'], self.target_range['x'], self.target_range['y'], self.centroide)
+        self.pov.random_base_pose(pose)
+        self.pov.home = pose
+        self.pov.go_home()
     
     def _reward(self, len_markers, distance, reset_pose, done):
         if done:
             return self.original_len, done
         
+        if self.current_step == self.max_episode_steps:
+            return 0, True
+        
         if reset_pose:
-            self.nbv.go_home()
+            self.pov.go_home()
             if distance:
                 return -10, done
             return -20, done
@@ -303,8 +307,9 @@ class AereoPositionNBV(Position, Env):
     def reset(self, seed= None, options= None):
         seed = np.random.seed()
         super().reset(seed=seed)
+        self.current_step = 0
         
-        self.nbv.go_home()
+        self.pov.go_home()
         self.markers_need_to_visit = self.set_markers(self.markers) 
         
         observation = self._get_obs()
@@ -313,24 +318,25 @@ class AereoPositionNBV(Position, Env):
     
     def step(self, action):
         norm_action = self._normalize_action(action)
-        self.nbv.next_point_of_view(norm_action)
+        self.pov.next_point_of_view(norm_action)
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
-        print(reward)
+        self.current_step += 1
         return observation, reward, done, info
     
-class UnderwaterPositionNBV(Position, Env):
+class UnderwaterPointOfView(PointOfView, Env):
     def __init__(self, ip: str, config: dict, node : str):
-        Position.__init__(self, ip, config, node)
+        PointOfView.__init__(self, ip, config, node)
         Env.__init__(self)
         
-        self.pack = ObservationSpace(config['observation'], config['vehicle']['camera']['dim'], 3)
+        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
         self.observation_space = self.pack.observation_space
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
         self.max_episode_steps = config['max_episode_steps']
+        self.current_step = 0
         
     def _get_obs(self):
-        observation = self.nbv.observation
+        observation = self.pov.observation
         self.pack.packing(observation)
         return self.pack.concat()
     
@@ -339,15 +345,15 @@ class UnderwaterPositionNBV(Position, Env):
         return {'info' : info}
     
     def _get_state(self):
-        viewd_markers, distances = self.nbv.detections()
-        d = self.nbv.detection_distance()
+        viewd_markers, distances = self.pov.detections()
+        d = self.pov.detection_distance()
         
         done = False
         reset_pose = False
         distance = 0
         self.len_markers = self.past_len
         
-        # if self.nbv.altitude <= self.nbv.altitude_min or self.nbv.altitude >= self.nbv.altitude_max:
+        # if self.pov.altitude <= self.pov.altitude_min or self.pov.altitude >= self.pov.altitude_max:
         #     return self._get_obs(), self.len_markers, distance, True, done, self._get_info() 
        
         if distances:
@@ -371,8 +377,11 @@ class UnderwaterPositionNBV(Position, Env):
         if done:
             return self.original_len, done
         
+        if self.current_step == self.max_episode_steps:
+            return 0, True
+        
         if reset_pose:
-            self.nbv.go_home()
+            self.pov.go_home()
             if distance:
                 return -10, done
             return -20, done
@@ -384,15 +393,15 @@ class UnderwaterPositionNBV(Position, Env):
         return self.original_len - len_markers, done
     
     def reset_random(self):
-        pose = self.nbv.random_pose(self.action_range['x'], self.action_range['y'], self.target_range['x'], self.target_range['y'], self.centroide)
-        self.nbv.home = pose
-        self.nbv.go_home()
+        pose = self.pov.random_pose(self.action_range['x'], self.action_range['y'], self.target_range['x'], self.target_range['y'], self.centroide)
+        self.pov.home = pose
+        self.pov.go_home()
     
     def reset(self, seed= None, options= None):
         seed = np.random.seed()
         super().reset(seed=seed)
-        
-        self.nbv.go_home()
+        self.current_step = 0
+        self.pov.go_home()
         self.markers_need_to_visit = self.set_markers(self.markers) 
         
         observation = self._get_obs()
@@ -401,8 +410,8 @@ class UnderwaterPositionNBV(Position, Env):
     
     def step(self, action):
         norm_action = self._normalize_action(action)
-        self.nbv.next_point_of_view(norm_action)
+        self.pov.next_point_of_view(norm_action)
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
-        print(reward)
+        self.current_step += 1
         return observation, reward, done, info
