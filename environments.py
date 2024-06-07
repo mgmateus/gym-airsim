@@ -187,9 +187,9 @@ class PointOfView:
         return set(m)
     
     def __init__(self, ue4 : str, config : dict, node : str):        
-        rospy.init_node(node)
         ip = container_ip(ue4)
         self.__airsim = airsim_launch(ip)
+        rospy.init_node(node)
         
         self.__action_range = config['action_range']
         self.__target_range = config['simulation']['target_range']
