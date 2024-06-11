@@ -37,11 +37,11 @@ class ObservationSpace:
         self.pack_len = pack_len
         w, h = image_dim
         self.__observation_space = {
-                    "rgb": spaces.Box(low = 0, high = 255, shape=(3, h*3, w), dtype=np.uint8),
-                    "depth": spaces.Box(low = -2**63, high = 2**63, shape=(1, h*3, w), dtype=np.float32),
-                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3, h*3, w), dtype=np.uint8),
+                    "rgb": spaces.Box(low = 0, high = 255, shape=(3*pack_len, 100, 100), dtype=np.uint8),
+                    "depth": spaces.Box(low = -2**63, high = 2**63, shape=(pack_len, h*3, w), dtype=np.float32),
+                    "segmentation": spaces.Box(low = 0, high = 255, shape=(3*pack_len, h*3, w), dtype=np.uint8),
                     "point_cloud": spaces.Box(low = -2**63, high = 2**63, shape=(1, ), dtype=np.float32),
-                    "tf": spaces.Box(low = -2**63, high = 2**63, shape=(7*3,), dtype=np.float64)
+                    "tf": spaces.Box(low = -2**63, high = 2**63, shape=(1, 7*pack_len), dtype=np.float64)
                 }
             
         self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
@@ -75,12 +75,12 @@ class ObservationSpace:
     @rgb.setter
     def rgb(self, observation):
         if not self.__rgb['rgb']:
-            self.__rgb['rgb'].append(self.resize_img(observation['rgb']))
+            self.__rgb['rgb'].append(self.resize_img(observation['rgb']).transpose(2, 0, 1).copy())
             self.__rgb['tf'].append(observation['tf'])
             self.__rgb['rgb'] = self.__rgb['rgb']*3
             self.__rgb['tf'] = self.__rgb['tf']*3
             
-        self.__rgb['rgb'].append(self.resize_img(observation['rgb']))
+        self.__rgb['rgb'].append(self.resize_img(observation['rgb']).transpose(2, 0, 1).copy())
         self.__rgb['tf'].append(observation['tf'])
         
     @property
@@ -332,7 +332,7 @@ class AereoPointOfView(PointOfView, Env):
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
         self.current_step += 1
-        return observation, reward, done, info
+        return observation, reward * 0.01, done, info
     
     def close(self):
         os.killpg(self.airsim, signal.SIGINT)
@@ -429,7 +429,7 @@ class UnderwaterPointOfView(PointOfView, Env):
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
         self.current_step += 1
-        return observation, reward, done, info
+        return observation, reward * 0.01, done, info
     
     def close(self):
         os.killpg(self.airsim, signal.SIGINT)
