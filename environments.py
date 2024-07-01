@@ -22,19 +22,19 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'airsim-helper'))
 
 from airsim_base.types import ImageType
 from ros_helper import DualActPose
-# from utils import random_choice, theta, quaternion_to_euler
+
 
 def normalize_value(x, min_val, max_val, a, b):
     return ((x - min_val) / (max_val - min_val)) * (b - a) + a
 
+def pre_aug_obs_shape(img : NDArray, dim : tuple):
+        return cv2.resize(img.copy(), *dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
+
 class ObservationSpace:
-    @staticmethod
-    def resize_img(img : NDArray):
-        return cv2.resize(img.copy(), (100, 100), interpolation = cv2.INTER_AREA)
-    
-    def __init__(self, observation_type : str , image_dim : tuple, pack_len : int) -> None:
+    def __init__(self, observation_type : str , image_dim : tuple, pack_len : int, pre_aug : tuple = None) -> None:
         self.observation_type = observation_type
         self.pack_len = pack_len
+        self.pre_aug = pre_aug
         w, h = image_dim
         self.__observation_space = {
                     "rgb": spaces.Box(low = 0, high = 255, shape=(3*pack_len, 100, 100), dtype=np.uint8),
@@ -44,7 +44,8 @@ class ObservationSpace:
                     "tf": spaces.Box(low = -2**63, high = 2**63, shape=(1, 7*pack_len), dtype=np.float64)
                 }
             
-        self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+        self.__rgb = {'rgb' : deque([], maxlen=pack_len)}
+        self.__rgb_tf = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
         self.__stereo = {'rgb' : deque([], maxlen=pack_len), 
                          'depth' : deque([], maxlen=pack_len), 
                          'tf' : deque([], maxlen=pack_len)}
@@ -66,7 +67,9 @@ class ObservationSpace:
     def observation_space(self):
         to_remove =  self.__getattribute__(self.observation_type).keys() ^ self.__observation_space.keys()
         _ = [self.__observation_space.pop(k) for k in to_remove]
-        return spaces.Dict(self.__observation_space)
+        l = list()
+        obs_space = self.obs_space(self.__observation_space)
+        return obs_space
         
     @property
     def rgb(self):
@@ -75,13 +78,29 @@ class ObservationSpace:
     @rgb.setter
     def rgb(self, observation):
         if not self.__rgb['rgb']:
-            self.__rgb['rgb'].append(self.resize_img(observation['rgb']).transpose(2, 0, 1).copy())
-            self.__rgb['tf'].append(observation['tf'])
+            self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
             self.__rgb['rgb'] = self.__rgb['rgb']*3
-            self.__rgb['tf'] = self.__rgb['tf']*3
             
-        self.__rgb['rgb'].append(self.resize_img(observation['rgb']).transpose(2, 0, 1).copy())
-        self.__rgb['tf'].append(observation['tf'])
+        self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+
+    @property
+    def rgb_tf(self):
+        return self.__rgb_tf
+
+    @rgb_tf.setter
+    def rgb_tf(self, observation):
+        if not self.__rgb_tf['rgb']:
+            self.__rgb_tf['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+            self.__rgb_tf['tf'].append(observation['tf'])
+            self.__rgb_tf['rgb'] = self.__rgb_tf['rgb']*3
+            self.__rgb_tf['tf'] = self.__rgb_tf['tf']*3
+            
+        self.__rgb_tf['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+        self.__rgb_tf['tf'].append(observation['tf'])
         
     @property
     def stereo(self):
@@ -90,15 +109,38 @@ class ObservationSpace:
     @stereo.setter
     def stereo(self, observation):
         if not self.__stereo['rgb']:
-            self.__stereo['rgb'].append(observation['rgb'])
-            self.__stereo['depth'].append(observation['depth'])
+            self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+            self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['depth'] )
+            self.__stereo['rgb'] = self.__stereo['rgb']*3
+            self.__stereo['depth'] = self.__stereo['depth']*3
+            
+        self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+        self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['depth'])
+
+    @property
+    def stereo_tf(self):
+        return self.__stereo
+    
+    @stereo_tf.setter
+    def stereo_tf(self, observation):
+        if not self.__stereo['rgb']:
+            self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+            self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['depth'])
             self.__stereo['tf'].append(observation['tf'])
             self.__stereo['rgb'] = self.__stereo['rgb']*3
             self.__stereo['depth'] = self.__stereo['depth']*3
             self.__stereo['tf'] = self.__stereo['tf']*3
             
-        self.__stereo['rgb'].append(observation['rgb'])
-        self.__stereo['depth'].append(observation['depth'])
+        self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['rgb'] )
+        self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
+                                     if self.pre_aug_obs_shape else observation['depth'])
         self.__stereo['tf'].append(observation['tf'])
         
     @property
@@ -178,6 +220,16 @@ class ObservationSpace:
     
     def __call__(self) -> dict:
         return self.__getattribute__(self.observation_type)
+
+    class obs_space:
+        def __init__(self, obs) -> None:
+            self.obs = spaces.Dict(obs)
+
+        def shape(self):
+            l = list()
+            for key in self.obs.keys():
+                l.append(self.obs[key].shape)
+            return l
     
 class PointOfView:
     @staticmethod
@@ -241,12 +293,12 @@ class PointOfView:
         return px, py, pz, yaw, gimbal_pitch
 
 class AereoPointOfView(PointOfView, Env):
-    def __init__(self, ue4: str, env_name : str, observation : str):
+    def __init__(self, ue4: str, env_name : str, observation : str, pre_aug : tuple = (100,100)):
         config = parse_cfg(env_name, observation)
         PointOfView.__init__(self, ue4, config, env_name)
         Env.__init__(self)
         
-        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
+        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3, pre_aug)
         self.observation_space = self.pack.observation_space
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
         self.max_episode_steps = config['max_episode_steps']

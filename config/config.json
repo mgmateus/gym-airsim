@@ -3,7 +3,7 @@
         "domain_name" : "eolic-aereo",
         "task_name" : "point-of-view",
         "observation_stack" : 3,
-        "max_episode_steps" : 250,
+        "max_episode_steps" : 200,
         "space_action_dim" : 5,
         "action_range" : {
             "x" : [-60, 60],
