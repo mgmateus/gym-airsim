@@ -1,8 +1,8 @@
 {
   "SeeDocsAt": "https://github.com/Microsoft/AirSim/blob/main/docs/settings.md",
   "SettingsVersion": 1.2,
-  "SimMode": "NoDisplay",
-  "ViewMode": "Fpv",
+  "SimMode": "Multirotor",
+  "ViewMode": "NoDisplay",
   "ClockSpeed": 1,
   "ApiServerPort": 41451,
   "RecordUIVisible": true,
