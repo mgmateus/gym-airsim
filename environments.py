@@ -28,7 +28,7 @@ def normalize_value(x, min_val, max_val, a, b):
     return ((x - min_val) / (max_val - min_val)) * (b - a) + a
 
 def pre_aug_obs_shape(img : NDArray, dim : tuple):
-        return cv2.resize(img.copy(), *dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
+        return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
 
 class ObservationSpace:
     def __init__(self, observation_type : str , image_dim : tuple, pack_len : int, pre_aug : tuple = None) -> None:
@@ -45,7 +45,7 @@ class ObservationSpace:
                 }
             
         self.__rgb = {'rgb' : deque([], maxlen=pack_len)}
-        self.__rgb_tf = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+        self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
         self.__stereo = {'rgb' : deque([], maxlen=pack_len), 
                          'depth' : deque([], maxlen=pack_len), 
                          'tf' : deque([], maxlen=pack_len)}
@@ -67,66 +67,30 @@ class ObservationSpace:
     def observation_space(self):
         to_remove =  self.__getattribute__(self.observation_type).keys() ^ self.__observation_space.keys()
         _ = [self.__observation_space.pop(k) for k in to_remove]
-        l = list()
-        obs_space = self.obs_space(self.__observation_space)
-        return obs_space
+        return spaces.Dict(self.__observation_space)
         
+
     @property
     def rgb(self):
         return self.__rgb
-    
+
     @rgb.setter
     def rgb(self, observation):
         if not self.__rgb['rgb']:
-            self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
+            self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) if self.pre_aug else observation['rgb'])
+            self.__rgb['tf'].append(observation['tf'])
             self.__rgb['rgb'] = self.__rgb['rgb']*3
+            self.__rgb['tf'] = self.__rgb['tf']*3
             
-        self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
+        self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) if self.pre_aug else observation['rgb'])
+        self.__rgb['tf'].append(observation['tf'])
 
-    @property
-    def rgb_tf(self):
-        return self.__rgb_tf
-
-    @rgb_tf.setter
-    def rgb_tf(self, observation):
-        if not self.__rgb_tf['rgb']:
-            self.__rgb_tf['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-            self.__rgb_tf['tf'].append(observation['tf'])
-            self.__rgb_tf['rgb'] = self.__rgb_tf['rgb']*3
-            self.__rgb_tf['tf'] = self.__rgb_tf['tf']*3
-            
-        self.__rgb_tf['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-        self.__rgb_tf['tf'].append(observation['tf'])
-        
     @property
     def stereo(self):
         return self.__stereo
     
     @stereo.setter
     def stereo(self, observation):
-        if not self.__stereo['rgb']:
-            self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-            self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['depth'] )
-            self.__stereo['rgb'] = self.__stereo['rgb']*3
-            self.__stereo['depth'] = self.__stereo['depth']*3
-            
-        self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-        self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['depth'])
-
-    @property
-    def stereo_tf(self):
-        return self.__stereo
-    
-    @stereo_tf.setter
-    def stereo_tf(self, observation):
         if not self.__stereo['rgb']:
             self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
                                      if self.pre_aug_obs_shape else observation['rgb'] )
@@ -220,16 +184,6 @@ class ObservationSpace:
     
     def __call__(self) -> dict:
         return self.__getattribute__(self.observation_type)
-
-    class obs_space:
-        def __init__(self, obs) -> None:
-            self.obs = spaces.Dict(obs)
-
-        def shape(self):
-            l = list()
-            for key in self.obs.keys():
-                l.append(self.obs[key].shape)
-            return l
     
 class PointOfView:
     @staticmethod

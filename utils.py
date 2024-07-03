@@ -99,4 +99,7 @@ def rtabmap_launch(vehicle_name : str, camera_name : str, db_path : str):
     s = subprocess_launch(launch)
     time.sleep(15)
     return s
+
+def shapes(obs):
+    return [tp.shape for k, tp in obs.items()]
     
