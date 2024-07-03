@@ -77,12 +77,14 @@ class ObservationSpace:
     @rgb.setter
     def rgb(self, observation):
         if not self.__rgb['rgb']:
-            self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) if self.pre_aug else observation['rgb'])
+            self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                     if self.pre_aug else observation['rgb'])
             self.__rgb['tf'].append(observation['tf'])
             self.__rgb['rgb'] = self.__rgb['rgb']*3
             self.__rgb['tf'] = self.__rgb['tf']*3
             
-        self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) if self.pre_aug else observation['rgb'])
+        self.__rgb['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
+                                 if self.pre_aug else observation['rgb'])
         self.__rgb['tf'].append(observation['tf'])
 
     @property
