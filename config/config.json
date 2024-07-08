@@ -158,5 +158,91 @@
         "altitude_range" : [9, 60],
         "centroide" : "centroide"
 
+    },
+    "basic-aereo-point-of-view" : {
+        "domain_name" : "basic-aereo",
+        "task_name" : "point-of-view",
+        "observation_stack" : 3,
+        "max_episode_steps" : 200,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "markers" : {
+            "name" : "Cube",
+            "num" : 79,
+            "d" : [2, 120]   
+        },
+        "simulation" : {
+            "vehicle" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3.0
+                },
+                "altitude" : -1.0
+            },
+            "shadow" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3.0
+                }
+            },
+            "target_range" : {
+                "x" : [50, 170],
+                "y" : [50, 170]
+            },
+            "centroide" : "centroide"
+        }
+    },
+    "basic-underwater-point-of-view" : {
+        "domain_name" : "basic-underwater",
+        "task_name" : "point-of-view",
+        "observation_stack" : 3,
+        "max_episode_steps" : 200,
+        "space_action_dim" : 5,
+        "action_range" : {
+            "x" : [-60, 60],
+            "y" : [-155, 155],
+            "z" : [-60, 60],
+            "yaw" : [-45, 45],
+            "gimbal_pitch" : [-45, 45]
+        },
+        "markers" : {
+            "name" : "Sphere",
+            "num" : 73,
+            "d" : [2, 120]   
+        },
+        "simulation" : {
+            "vehicle" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_vehicle",
+                    "altitude" : 3.0
+                },
+                "altitude" : [-30, -6]
+            },
+            "shadow" : {
+                "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                "camera" : {},
+                "base" : {
+                    "name" : "boat_shadow",
+                    "altitude" : 3.0
+                }
+            },
+            "target_range" : {
+                "x" : [50, 170],
+                "y" : [50, 170]
+            },
+            "centroide" : "centroide"
+        }
     }
 }
