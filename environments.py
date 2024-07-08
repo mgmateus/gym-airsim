@@ -44,7 +44,6 @@ class ObservationSpace:
                     "tf": spaces.Box(low = -2**63, high = 2**63, shape=(1, 7*pack_len), dtype=np.float64)
                 }
             
-        self.__rgb = {'rgb' : deque([], maxlen=pack_len)}
         self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
         self.__stereo = {'rgb' : deque([], maxlen=pack_len), 
                          'depth' : deque([], maxlen=pack_len), 
