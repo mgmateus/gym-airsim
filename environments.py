@@ -27,7 +27,17 @@ from ros_helper import DualActPose
 def normalize_value(x, min_val, max_val, a, b):
     return ((x - min_val) / (max_val - min_val)) * (b - a) + a
 
-def pre_aug_obs_shape(img : NDArray, dim : tuple):
+def pre_aug_obs_shape(img : NDArray, dim : tuple, type= 'int'):
+        if type.endswith('float'):
+            img_ = img.copy()
+            nan_location = np.isnan(img_)
+            img_[nan_location] = np.nanmax(img_)
+            norm_image =  (img_)*255./5.
+            norm_image[0,0] = 255.
+            norm_image = norm_image.astype('uint8')
+            norm_image = cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR) #cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA)
+            return cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1) #cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR)
+
         return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
 
 class ObservationSpace:
@@ -38,13 +48,16 @@ class ObservationSpace:
         w, h = image_dim
         self.__observation_space = {
                     "rgb": spaces.Box(low = 0, high = 255, shape=(3*pack_len, 100, 100), dtype=np.uint8),
-                    "depth": spaces.Box(low = -2**63, high = 2**63, shape=(pack_len, h*3, w), dtype=np.float32),
+                    "depth": spaces.Box(low = -2**63, high = 2**63, shape=(3*pack_len, 100, 100), dtype=np.float32),
                     "segmentation": spaces.Box(low = 0, high = 255, shape=(3*pack_len, h*3, w), dtype=np.uint8),
                     "point_cloud": spaces.Box(low = -2**63, high = 2**63, shape=(1, ), dtype=np.float32),
                     "tf": spaces.Box(low = -2**63, high = 2**63, shape=(1, 7*pack_len), dtype=np.float64)
                 }
             
         self.__rgb = {'rgb' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+        self.__depth = {'depth' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+        self.__segmentation = {'segmentation' : deque([], maxlen=pack_len), 'tf' : deque([], maxlen=pack_len)}
+
         self.__stereo = {'rgb' : deque([], maxlen=pack_len), 
                          'depth' : deque([], maxlen=pack_len), 
                          'tf' : deque([], maxlen=pack_len)}
@@ -87,6 +100,40 @@ class ObservationSpace:
         self.__rgb['tf'].append(observation['tf'])
 
     @property
+    def depth(self):
+        return self.__depth
+
+    @depth.setter
+    def depth(self, observation):
+        if not self.__depth['depth']:
+            self.__depth['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug, type='float') 
+                                     if self.pre_aug else observation['depth'])
+            self.__depth['tf'].append(observation['tf'])
+            self.__depth['depth'] = self.__depth['depth']*3
+            self.__depth['tf'] = self.__depth['tf']*3
+            
+        self.__depth['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug, type='float') 
+                                 if self.pre_aug else observation['depth'])
+        self.__depth['tf'].append(observation['tf'])
+
+    @property
+    def segmentation(self):
+        return self.__segmentation
+
+    @segmentation.setter
+    def segmentation(self, observation):
+        if not self.__segmentation['segmentation']:
+            self.__segmentation['segmentation'].append(pre_aug_obs_shape(observation['segmentation'], self.pre_aug) 
+                                     if self.pre_aug else observation['segmentation'])
+            self.__segmentation['tf'].append(observation['tf'])
+            self.__segmentation['segmentation'] = self.__segmentation['segmentation']*3
+            self.__segmentation['tf'] = self.__segmentation['tf']*3
+            
+        self.__segmentation['segmentation'].append(pre_aug_obs_shape(observation['segmentation'], self.pre_aug) 
+                                 if self.pre_aug else observation['segmentation'])
+        self.__segmentation['tf'].append(observation['tf'])
+
+    @property
     def stereo(self):
         return self.__stereo
     
@@ -94,18 +141,18 @@ class ObservationSpace:
     def stereo(self, observation):
         if not self.__stereo['rgb']:
             self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-            self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['depth'])
+                                     if self.pre_aug else observation['rgb'] )
+            self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug, type='float') 
+                                     if self.pre_aug else observation['depth'])
             self.__stereo['tf'].append(observation['tf'])
             self.__stereo['rgb'] = self.__stereo['rgb']*3
             self.__stereo['depth'] = self.__stereo['depth']*3
             self.__stereo['tf'] = self.__stereo['tf']*3
             
         self.__stereo['rgb'].append(pre_aug_obs_shape(observation['rgb'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['rgb'] )
-        self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug) 
-                                     if self.pre_aug_obs_shape else observation['depth'])
+                                     if self.pre_aug else observation['rgb'] )
+        self.__stereo['depth'].append(pre_aug_obs_shape(observation['depth'], self.pre_aug, type='float') 
+                                     if self.pre_aug else observation['depth'])
         self.__stereo['tf'].append(observation['tf'])
         
     @property
