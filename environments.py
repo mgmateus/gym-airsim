@@ -393,12 +393,12 @@ class AereoPointOfView(PointOfView, Env):
         sys.exit()  
     
 class UnderwaterPointOfView(PointOfView, Env):
-    def __init__(self, ue4: str, env_name : str, observation : str):
+    def __init__(self, ue4: str, env_name : str, observation : str, pre_aug : tuple = (100,100)):
         config = parse_cfg(env_name, observation)
         PointOfView.__init__(self, ue4, config, env_name)
         Env.__init__(self)
         
-        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3)
+        self.pack = ObservationSpace(config['observation'], config['simulation']['vehicle']['camera']['dim'], 3, pre_aug)
         self.observation_space = self.pack.observation_space
         self.action_space = spaces.Box(low=-1, high=1, shape=(5,), dtype=np.float32)
         self.max_episode_steps = config['max_episode_steps']
