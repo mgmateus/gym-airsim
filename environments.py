@@ -80,7 +80,7 @@ class ObservationSpace:
         to_remove =  self.__getattribute__(self.observation_type).keys() ^ self.__observation_space.keys()
         _ = [self.__observation_space.pop(k) for k in to_remove]
         return spaces.Dict(self.__observation_space)
-        
+     
 
     @property
     def rgb(self):
@@ -228,7 +228,13 @@ class ObservationSpace:
         
     def concat(self):
         pack = self.__getattribute__(self.observation_type)
-        return dict(map(lambda k, obs : (k, np.concatenate(list(obs), axis=0)), pack.keys(), pack.values()))
+        return dict(map(lambda k, obs : (k, np.concatenate(list(obs), axis=0)), 
+                        pack.keys(), pack.values()))
+    
+    # def get_obs(self, observation : dict):
+    #     self._packing(observation)
+    #     return list(self._concat().values)
+
     
     def __call__(self) -> dict:
         return self.__getattribute__(self.observation_type)

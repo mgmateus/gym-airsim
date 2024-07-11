@@ -1,7 +1,29 @@
+import cv2
 import json
 import os
 import subprocess
 import time
+
+import numpy as np
+
+from numpy.typing import NDArray
+
+
+def normalize_value(x, min_val, max_val, a, b):
+    return ((x - min_val) / (max_val - min_val)) * (b - a) + a
+
+def pre_aug_obs_shape(img : NDArray, dim : tuple, type= 'int'):
+        if type.endswith('float'):
+            img_ = img.copy()
+            nan_location = np.isnan(img_)
+            img_[nan_location] = np.nanmax(img_)
+            norm_image =  (img_)*255./5.
+            norm_image[0,0] = 255.
+            norm_image = norm_image.astype('uint8')
+            norm_image = cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR) #cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA)
+            return cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1) #cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR)
+
+        return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
 
 def json_content(path : str):
     with open(path, 'r') as file:
