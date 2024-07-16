@@ -9,21 +9,34 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-def normalize_value(x, min_val, max_val, a, b):
-    return ((x - min_val) / (max_val - min_val)) * (b - a) + a
+class dict_object:
+    def __init__(self, _dict):
+        if isinstance(_dict, dict):
+            self.__dict__.update(_dict) 
+        else:
+            n_dict = {}
+            for key in _dict:
+                n_dict[key] = None
+            self.__dict__.update(n_dict) 
 
-def pre_aug_obs_shape(img : NDArray, dim : tuple, type= 'int'):
-        if type.endswith('float'):
-            img_ = img.copy()
-            nan_location = np.isnan(img_)
-            img_[nan_location] = np.nanmax(img_)
-            norm_image =  (img_)*255./5.
-            norm_image[0,0] = 255.
-            norm_image = norm_image.astype('uint8')
-            norm_image = cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR) #cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA)
-            return cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1) #cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR)
+    def __str__(self):
+        return str(self.__dict__)
+    
+    def __setitem__(self, key : str, value):
+        self.__dict__[key] = value
 
-        return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
+    def keys(self, as_list : bool = False):
+        return list(self.__dict__.keys()) if as_list else self.__dict__.keys()
+    
+    def items(self):
+        return self.__dict__.items()
+    
+    def update(self, other : dict):
+        if isinstance(other, dict):
+            for key, cnt in other.items():
+                self.__dict__[key] = cnt
+
+        return self.__dict__
 
 def json_content(path : str):
     with open(path, 'r') as file:
@@ -49,14 +62,14 @@ def parse_cfg(env_ : str, observation_ : str):
                           
     svehicle_camera_fov = svehicle['Cameras'][svehicle_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
     
-    sshadow = settings['Vehicles'][svehicle_names[1]]
-    sshadow_name = svehicle_names[1]
-    gsx, gsy, gsz, gsroll, gspitch, gsyaw = sshadow['X'], sshadow['Y'], sshadow['Z'], \
-                                sshadow['Roll'], sshadow['Pitch'], sshadow['Yaw']
-    sshadow_camera_name = list(sshadow['Cameras'].keys())[0]
-    sshadow_camera_dim = sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Width'],\
-                          sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]['Height']
-    sshadow_camera_fov = sshadow['Cameras'][sshadow_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
+    stwin = settings['Vehicles'][svehicle_names[1]]
+    stwin_name = svehicle_names[1]
+    gsx, gsy, gsz, gsroll, gspitch, gsyaw = stwin['X'], stwin['Y'], stwin['Z'], \
+                                stwin['Roll'], stwin['Pitch'], stwin['Yaw']
+    stwin_camera_name = list(stwin['Cameras'].keys())[0]
+    stwin_camera_dim = stwin['Cameras'][stwin_camera_name]['CaptureSettings'][0]['Width'],\
+                          stwin['Cameras'][stwin_camera_name]['CaptureSettings'][0]['Height']
+    stwin_camera_fov = stwin['Cameras'][stwin_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
                                      
     env = config[env_]
     env['observation'] = observation_ 
@@ -68,11 +81,11 @@ def parse_cfg(env_ : str, observation_ : str):
     env['simulation']['vehicle']['camera']['dim'] = svehicle_camera_dim
     env['simulation']['vehicle']['camera']['fov'] = svehicle_camera_fov
     
-    env['simulation']['shadow']['name'] = sshadow_name
-    env['simulation']['shadow']['global_pose'] = [gsx, gsy, gsz, gsroll, gspitch, gsyaw]
-    env['simulation']['shadow']['camera']['name'] = sshadow_camera_name
-    env['simulation']['shadow']['camera']['dim'] = sshadow_camera_dim
-    env['simulation']['shadow']['camera']['fov'] = sshadow_camera_fov
+    env['simulation']['twin']['name'] = stwin_name
+    env['simulation']['twin']['global_pose'] = [gsx, gsy, gsz, gsroll, gspitch, gsyaw]
+    env['simulation']['twin']['camera']['name'] = stwin_camera_name
+    env['simulation']['twin']['camera']['dim'] = stwin_camera_dim
+    env['simulation']['twin']['camera']['fov'] = stwin_camera_fov
     
     return env
 
@@ -122,6 +135,5 @@ def rtabmap_launch(vehicle_name : str, camera_name : str, db_path : str):
     time.sleep(15)
     return s
 
-def shapes(obs):
-    return [tp.shape for k, tp in obs.items()]
+
     
