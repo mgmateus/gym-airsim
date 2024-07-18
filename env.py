@@ -14,9 +14,9 @@ from gymnasium import Env
 from gymnasium.spaces import Space, Box
 from numpy.typing import NDArray
 
-from .utils import dict_object, container_ip, airsim_launch
+from . import PointOfViewTwins, DictToClass
+from .utils import container_ip, airsim_launch, json_content
 
-airsim_base = importlib.import_module("airsim-base")
 
 
 
@@ -90,7 +90,7 @@ class Stack(Space):
     
 
 class Simulation:
-    action_range = dict_object({
+    action_range = DictToClass({
                     "x" : [-60, 60],
                     "y" : [-155, 155],
                     "z" : [-60, 60],
@@ -98,14 +98,14 @@ class Simulation:
                     "gimbal_pitch" : [-45, 45]
                 })
     
-    vehicle = dict_object({
+    vehicle = DictToClass({
                 "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 "base" : {
                     "name" : "boat_vehicle",
                     "altitude" : 3.0
                 }
             })
-    twin = dict_object({
+    twin = DictToClass({
                 "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 "base" : {
                     "name" : "boat_vehicle",
@@ -115,13 +115,13 @@ class Simulation:
     
     centroide = "centroide"
     
-    def __init__(self, observation_type : str, ue4 : str, markers_name : dict_object):        
+    def __init__(self, observation_type : str, ue4 : str, markers_name : DictToClass):        
         self.__ip = container_ip(ue4)
         self.__airsim = airsim_launch(self.__ip)
-
-        self.__twins = airsim_base.PointOfViewTwins(self.ip, self.vehicle, self.twin, observation_type)
-        self.__twins.set_detection(markers_name)
         self._parse_settings()
+        self.__twins = PointOfViewTwins(self.ip, self.vehicle, self.twin, observation_type)
+        self.__twins.set_detection(markers_name)
+        
 
     @property
     def client(self):
@@ -136,8 +136,9 @@ class Simulation:
         return self.__ip
 
     def _parse_settings(self):
-    
-        settings = dict({self.__twins.getSettingsString()})
+        settings_path = os.path.abspath(__file__).replace('env.py', 'settings/settings.json')
+        settings = dict(json_content(settings_path))
+        
         svehicle_names = list(settings['Vehicles'].keys())
         
         svehicle = settings['Vehicles'][svehicle_names[0]]
@@ -160,25 +161,26 @@ class Simulation:
                             stwin['Cameras'][stwin_camera_name]['CaptureSettings'][0]['Height']
         stwin_camera_fov = stwin['Cameras'][stwin_camera_name]['CaptureSettings'][0]["FOV_Degrees"]
                                         
+        v = {'name' : svehicle_name,
+             'global_pose' : [gx, gy, gz, groll, gpitch, gyaw],
+             'camera' : {
+                        'name' : svehicle_camera_name,
+                        'dim' : svehicle_camera_dim,
+                        'fov' : svehicle_camera_fov
+                        }
+            }
+        self.vehicle.update(v)
         
-        self.vehicle.update({'name' : svehicle_name})
-        self.vehicle.update({'global_pose' : [gx, gy, gz, groll, gpitch, gyaw]})
-        self.vehicle.update({'camera' : {
-                                    'name' : svehicle_camera_name,
-                                    'dim' : svehicle_camera_dim,
-                                    'fov' : svehicle_camera_fov
-                                    }
-                            })
+        t = {'name' : stwin_name,
+             'global_pose' : [gsx, gsy, gsz, gsroll, gspitch, gsyaw],
+             'camera' : {
+                        'name' : stwin_camera_name,
+                        'dim' : stwin_camera_dim,
+                        'fov' : stwin_camera_fov
+                        }
+            }
         
-        self.twin.update({'name' : stwin_name})
-        self.twin.update({'global_pose' : [gsx, gsy, gsz, gsroll, gspitch, gsyaw]})
-        self.twin.update({'camera' : {
-                                    'name' : stwin_camera_name,
-                                    'dim' : stwin_camera_dim,
-                                    'fov' : stwin_camera_fov
-                                    }
-                            })
-
+        self.twin.update(t)
 
 class GymPointOfView(Simulation, Env):
     task_name = "point-of-view"
@@ -195,8 +197,8 @@ class GymPointOfView(Simulation, Env):
                  pre_aug : tuple, 
                  domain : str,
                  ue4 : str, 
-                 markers : dict_object,
-                 target_range : dict_object):
+                 markers : DictToClass,
+                 target_range : DictToClass):
         
         Simulation.__init__(self, observation_type, ue4, markers.name)
         Env.__init__(self)
@@ -352,12 +354,12 @@ class GymPointOfView(Simulation, Env):
 
 class AirPointOfView:
     domain = 'air'
-    markers = dict_object({'name' : 'Cube'})
+    markers = DictToClass({'name' : 'Cube'})
     altitude = -1.0
 
 class UnderwaterPointOfView:
     domain_name = 'underwater'
-    markers = dict_object({'name' : 'Sphere'})
+    markers = DictToClass({'name' : 'Sphere'})
     altitude = [-30, -6]
 
 class BasicAirPOV(AirPointOfView, GymPointOfView):
@@ -365,7 +367,7 @@ class BasicAirPOV(AirPointOfView, GymPointOfView):
                 "num" : 79,
                 "range_to_get" : [2, 120]
             })
-    target_range = dict_object({
+    target_range = DictToClass({
                 "x" : [50, 170],
                 "y" : [50, 170]
             })
@@ -373,22 +375,21 @@ class BasicAirPOV(AirPointOfView, GymPointOfView):
     def __init__(self, observation_type : str, 
                  observation_stack : int, 
                  pre_aug : tuple, 
-                 max_episode_steps : int,
-                 domain : str,
+                 max_ep_steps : int,
                  ue4 : str) -> None:
         
         AirPointOfView.__init__(self)
         GymPointOfView.__init__(self, observation_type, observation_stack, pre_aug, 
-                                domain, ue4, self.markers, self.target_range)
-        
-        self.max_episode_steps = max_episode_steps
+                                self.domain, ue4, self.markers, self.target_range)
+                
+        self.max_episode_steps = max_ep_steps
 
 class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
     markers = AirPointOfView.markers.update({
                 "num" : 73,
                 "range_to_get" : [2, 120]
             })
-    target_range = dict_object({
+    target_range = DictToClass({
                 "x" : [50, 170],
                 "y" : [50, 170]
             })
@@ -405,3 +406,36 @@ class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
                                 domain, ue4, self.markers, self.target_range)
         
         self.max_episode_steps = max_episode_steps
+
+from copy import deepcopy
+
+if __name__ == "__main__":
+    b = BasicAirPOV('rgb', 3, (100, 100), 200, 'ue4')
+    
+    # class DictToClass:
+    #     def __init__(self, dictionary):
+    #         self.update(dictionary)
+        
+    #     def __repr__(self):
+    #         return str(self.__dict__)
+        
+    #     def update(self, dictionary : dict):
+    #         for key, value in dictionary.items():
+    #             if isinstance(value, dict):
+    #                 # Se o valor for um dicionário, criar um atributo de classe recursivamente
+    #                 setattr(self, key, DictToClass(value))
+    #             else:
+    #                 # Se o valor não for um dicionário, criar um atributo diretamente
+    #                 setattr(self, key, value)
+
+  
+    # t ={'name': 'Hydrone', 'camera2': {'name': 'stereo', 'jzus' : {'teste' : 45, 'tesando' : 5}, 'dim': (672, 376), 'fov': 90.0}, 'global_pose': [0, 0, 0, 0.0, 0.0, 0.0], 'camera': {'name': 'stereo', 'dim': (672, 376), 'fov': 90.0}}
+
+    # # a= DictToClass({}).update2(t)
+
+    # a = DictToClass(t)
+    # a.camera.update({'teste' : 45, 'tesando' : 5})
+
+    # print(a.camera)
+    
+    
