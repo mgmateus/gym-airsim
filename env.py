@@ -43,17 +43,20 @@ class Stack(Space):
     def stack(self):
         stack = dict()
         for k, obs in self.__stack.items():
+            print(f"STACK_SHAPE : {len(obs)}")
             stack[k] = np.concatenate(list(obs), axis=0)
+            print(f"STACK_SHAPE : {len(stack[k])}")
         return stack.values()
     
     @stack.setter
     def stack(self, obs : dict):
-        rospy.logwarn(f"ENTREI NO SETTER")
         for k, v in obs.items():
             self.__stack[k].append(v)
-            if not self.__stack[k]:
-                self.__stack[k] = v*3
-            
+            if len(self.__stack[k]) == 1:
+                self.__stack[k] = self.__stack[k]*3
+
+        rospy.logwarn(f"ENTREI NO SETTER --> stack {self.__stack}")
+    
     
     def _obs_space(self):
         stereo = set({'segmentation', 'point_cloud'})
