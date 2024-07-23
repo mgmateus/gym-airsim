@@ -2,6 +2,7 @@
 import cv2
 import importlib  
 import os 
+import rospy
 import signal
 import sys
 
@@ -47,12 +48,12 @@ class Stack(Space):
     
     @stack.setter
     def stack(self, obs : dict):
+        rospy.logwarn(f"ENTREI NO SETTER")
         for k, v in obs.items():
-            if self.__stack[k]:
-                self.__stack[k].append(v)
-            else:
+            self.__stack[k].append(v)
+            if not self.__stack[k]:
                 self.__stack[k] = v*3
-
+            
     
     def _obs_space(self):
         stereo = set({'segmentation', 'point_cloud'})
@@ -88,7 +89,6 @@ class Stack(Space):
 
         return dstack
     
-
 class Simulation:
     action_range = DictToClass({
                     "x" : [-60, 60],
@@ -108,7 +108,7 @@ class Simulation:
     twin = DictToClass({
                 "start_pose" : [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 "base" : {
-                    "name" : "boat_vehicle",
+                    "name" : "boat_twin",
                     "altitude" : 3.0
                 }
             })
@@ -179,7 +179,7 @@ class Simulation:
                         'fov' : stwin_camera_fov
                         }
             }
-        
+        print(t)
         self.twin.update(t)
 
 class GymPointOfView(Simulation, Env):
@@ -202,6 +202,7 @@ class GymPointOfView(Simulation, Env):
         
         Simulation.__init__(self, observation_type, ue4, markers.name)
         Env.__init__(self)
+        rospy.init_node(f"gym-{self.task_name}")
 
         self.observation_space = Stack(observation_type, observation_stack, pre_aug)
         self.action_space = Box(low=-1, high=1, shape=(5,), dtype=np.float32)
