@@ -43,9 +43,9 @@ class Stack(Space):
     def stack(self):
         stack = dict()
         for k, obs in self.__stack.items():
-            print(f"STACK_SHAPE : {len(obs)}")
+            # print(f"STACK_SHAPE : {len(obs)}")
             stack[k] = np.concatenate(list(obs), axis=0)
-            print(f"STACK_SHAPE : {len(stack[k])}")
+            # print(f"STACK_SHAPE : {len(stack[k])}")
         return stack.values()
     
     @stack.setter
@@ -55,7 +55,7 @@ class Stack(Space):
             if len(self.__stack[k]) == 1:
                 self.__stack[k] = self.__stack[k]*3
 
-        rospy.logwarn(f"ENTREI NO SETTER --> stack {self.__stack}")
+        # rospy.logwarn(f"ENTREI NO SETTER --> stack {self.__stack}")
     
     
     def _obs_space(self):
@@ -182,7 +182,7 @@ class Simulation:
                         'fov' : stwin_camera_fov
                         }
             }
-        print(t)
+        # print(t)
         self.twin.update(t)
 
 class GymPointOfView(Simulation, Env):
@@ -411,35 +411,3 @@ class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
         
         self.max_episode_steps = max_episode_steps
 
-from copy import deepcopy
-
-if __name__ == "__main__":
-    b = BasicAirPOV('rgb', 3, (100, 100), 200, 'ue4')
-    
-    # class DictToClass:
-    #     def __init__(self, dictionary):
-    #         self.update(dictionary)
-        
-    #     def __repr__(self):
-    #         return str(self.__dict__)
-        
-    #     def update(self, dictionary : dict):
-    #         for key, value in dictionary.items():
-    #             if isinstance(value, dict):
-    #                 # Se o valor for um dicionário, criar um atributo de classe recursivamente
-    #                 setattr(self, key, DictToClass(value))
-    #             else:
-    #                 # Se o valor não for um dicionário, criar um atributo diretamente
-    #                 setattr(self, key, value)
-
-  
-    # t ={'name': 'Hydrone', 'camera2': {'name': 'stereo', 'jzus' : {'teste' : 45, 'tesando' : 5}, 'dim': (672, 376), 'fov': 90.0}, 'global_pose': [0, 0, 0, 0.0, 0.0, 0.0], 'camera': {'name': 'stereo', 'dim': (672, 376), 'fov': 90.0}}
-
-    # # a= DictToClass({}).update2(t)
-
-    # a = DictToClass(t)
-    # a.camera.update({'teste' : 45, 'tesando' : 5})
-
-    # print(a.camera)
-    
-    
