@@ -252,8 +252,9 @@ class GymPointOfView(Simulation, Env):
                 norm_image =  (img_)*255./5.
                 norm_image[0,0] = 255.
                 norm_image = norm_image.astype('uint8')
-                norm_image = cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR)
-                return cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1) 
+                norm_image = cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA)
+                
+                return cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR).transpose(2, 0, 1) 
 
             return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
         
