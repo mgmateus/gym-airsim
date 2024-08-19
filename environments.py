@@ -38,7 +38,7 @@ class Stack(Space):
                     "depth": Box(low = -2**63, high = 2**63, shape=self.__shapes["depth"], dtype=np.float32),
                     "segmentation": Box(low = 0, high = 255, shape=self.__shapes["segmentation"], dtype=np.uint8),
                     "point_cloud": Box(low = -2**63, high = 2**63, shape=self.__shapes["point_cloud"], dtype=np.float32),
-                    "tf": Box(low = -2**63, high = 2**63, shape=self.__shapes["tf"], dtype=np.float64)
+                    "tf": Box(low = -2**63, high = 2**63, shape=self.__shapes["tf"], dtype=np.float32)
                 }
         
         self.__stack = self._stack(stack)
