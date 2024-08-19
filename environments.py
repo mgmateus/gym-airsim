@@ -25,20 +25,33 @@ class Stack(Space):
         
     def __init__(self, obs_type : str, stack : int, pre_aug : tuple):
         self.__obs_type = obs_type
-        img_shape = (3*stack, *pre_aug)
-        tf_shape = (1, 7*stack)
-
+        self.__shapes = {
+                    "rgb" : (3*stack, *pre_aug), 
+                    "depth" : (3*stack, *pre_aug),
+                    "segmentation" : (3*stack, *pre_aug),
+                    "point_cloud" : (pre_aug[0] * pre_aug[1], 3), 
+                    "tf" : (1, 7*stack)
+                }
+        
         self.__obs_space = {
-                    "rgb": Box(low = 0, high = 255, shape= img_shape, dtype=np.uint8),
-                    "depth": Box(low = -2**63, high = 2**63, shape=img_shape, dtype=np.float32),
-                    "segmentation": Box(low = 0, high = 255, shape=img_shape, dtype=np.uint8),
-                    "point_cloud": Box(low = -2**63, high = 2**63, shape=(1, ), dtype=np.float32),
-                    "tf": Box(low = -2**63, high = 2**63, shape=tf_shape, dtype=np.float64)
+                    "rgb": Box(low = 0, high = 255, shape= self.__shapes["rgb"], dtype=np.uint8),
+                    "depth": Box(low = -2**63, high = 2**63, shape=self.__shapes["depth"], dtype=np.float32),
+                    "segmentation": Box(low = 0, high = 255, shape=self.__shapes["segmentation"], dtype=np.uint8),
+                    "point_cloud": Box(low = -2**63, high = 2**63, shape=self.__shapes["point_cloud"], dtype=np.float32),
+                    "tf": Box(low = -2**63, high = 2**63, shape=self.__shapes["tf"], dtype=np.float64)
                 }
         
         self.__stack = self._stack(stack)
-        Space.__init__(self, shape=[*((img_shape, ) * (len(self.__obs_space.keys()) -1)),tf_shape])
+        # Space.__init__(self, shape=[*((img_shape, ) * (len(self.__obs_space.keys()) -1)),tf_shape])
         
+        # shapes = {key: shapes[key] for key in self.__obs_space.keys()}
+        # Space.__init__(self, shape=[*shapes.values()])
+        Space.__init__(self)
+
+    @property
+    def shape(self):
+        return {key: self.__shapes[key] for key in self.__obs_space.keys()}
+    
     @property
     def stack(self):
         stack = dict()
@@ -46,7 +59,8 @@ class Stack(Space):
             # print(f"STACK_SHAPE : {len(obs)}")
             stack[k] = np.concatenate(list(obs), axis=0)
             # print(f"STACK_SHAPE : {len(stack[k])}")
-        return stack.values()
+        # return stack.values()
+        return stack
     
     @stack.setter
     def stack(self, obs : dict):
@@ -264,6 +278,10 @@ class GymPointOfView(Simulation, Env):
                 if k.endswith('tf'):
                     _obs[k] = v
 
+                elif k.endswith('point_cloud'):
+                    max_points = self.__pre_aug[0] * self.__pre_aug[1]
+                    _obs[k] = np.pad(v, ((0, max_points - v.shape[0]), (0, 0)), mode='constant', constant_values=0)
+
                 elif k.endswith('depth'):
                     _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug, float())
 
@@ -341,9 +359,7 @@ class GymPointOfView(Simulation, Env):
         self.client.go_home()
         self.markers_need_to_visit = self.markers_backup
         
-        observation = self._get_obs()
-        info = self._get_info()
-        return observation, info
+        return self._get_obs(), self._get_info()
     
     def step(self, action):
         norm_action = self._normalize_action(action)
