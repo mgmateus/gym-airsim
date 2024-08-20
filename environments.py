@@ -30,7 +30,7 @@ class Stack(Space):
                     "depth" : (3*stack, *pre_aug),
                     "segmentation" : (3*stack, *pre_aug),
                     "point_cloud" : (pre_aug[0] * pre_aug[1], 3), 
-                    "tf" : (1, 7*stack)
+                    "tf" : (7*stack,)
                 }
         
         self.__obs_space = {
