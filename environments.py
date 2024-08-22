@@ -326,10 +326,11 @@ class GymPointOfView(Simulation, Env):
         return self._get_obs(), self.markers_len, distance, reset_pose, done, self._get_info()
     
     def _reward(self, markers_len, distance, reset_pose, done):
+        # print(f"CURRENT_STEP : {self.current_step} --- MAX_STEPS : {self.max_episode_steps}")
         if done:
             return self.original_markers_len, done
         
-        if self.current_step == self.max_episode_steps:
+        if self.current_step == self.max_episode_steps -1 :
             return 0, True
         
         if reset_pose:
