@@ -204,11 +204,18 @@ class GymPointOfView(Simulation, Env):
     max_episode_steps = 200
 
     @staticmethod
-    def set_markers(markers_name : float, markers_num : int):
-        m = [ markers_name ]
-        m = m + [f"{markers_name}{i}" for i in range(1, markers_num+1)]
-        return set(m)
-
+    def set_markers(markers_name, markers_num : int):
+        if isinstance(markers_name, str):
+            m = [ markers_name ]
+            m = m + [f"{markers_name}{i}" for i in range(1, markers_num+1)]
+            return set(m)
+        
+        am = [ markers_name[0] ]
+        am = am + [f"{ markers_name[0]}{i}" for i in range(1, markers_num[0]+1)]
+        um = [ markers_name[1] ]
+        um = um + [f"{ markers_name[1]}{i}" for i in range(1, markers_num[1]+1)]
+        return set(am+um)
+    
     def __init__(self, observation_type : str, 
                  observation_stack : int, 
                  pre_aug : tuple, 
@@ -380,9 +387,14 @@ class AirPointOfView:
     altitude = -1.0
 
 class UnderwaterPointOfView:
-    domain_name = 'underwater'
+    domain = 'underwater'
     markers = DictToClass({'name' : 'Sphere'})
     altitude = [-30, -6]
+
+class HybridPointOfView:
+    domain = 'hybrid'
+    markers = DictToClass({'name' : ('Cube', 'Sphere')})
+    altitude = -30
 
 class BasicAirPOV(AirPointOfView, GymPointOfView):
     markers = AirPointOfView.markers.update({
@@ -390,8 +402,8 @@ class BasicAirPOV(AirPointOfView, GymPointOfView):
                 "range_to_get" : [2, 120]
             })
     target_range = DictToClass({
-                "x" : [50, 170],
-                "y" : [50, 170]
+                "x" : [50, 120],
+                "y" : [50, 120]
             })
 
     def __init__(self, observation_type : str, 
@@ -407,25 +419,46 @@ class BasicAirPOV(AirPointOfView, GymPointOfView):
         self.max_episode_steps = max_ep_steps
 
 class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
-    markers = AirPointOfView.markers.update({
+    markers = UnderwaterPointOfView.markers.update({
                 "num" : 73,
                 "range_to_get" : [2, 120]
             })
     target_range = DictToClass({
-                "x" : [50, 170],
-                "y" : [50, 170]
+                "x" : [50, 120],
+                "y" : [50, 120]
             })
 
     def __init__(self, observation_type : str, 
                  observation_stack : int, 
                  pre_aug : tuple, 
-                 max_episode_steps : int,
-                 domain : str,
+                 max_ep_steps : int,
                  ue4 : str) -> None:
         
         AirPointOfView.__init__(self)
         GymPointOfView.__init__(self, observation_type, observation_stack, pre_aug, 
-                                domain, ue4, self.markers, self.target_range)
+                                self.domain, ue4, self.markers, self.target_range)
         
-        self.max_episode_steps = max_episode_steps
+        self.max_episode_steps = max_ep_steps
+
+class BasicHybridPOV(HybridPointOfView, GymPointOfView):
+    markers = HybridPointOfView.markers.update({
+                "num" : (79, 73),
+                "range_to_get" : [2, 120]
+            })
+    target_range = DictToClass({
+                "x" : [50, 120],
+                "y" : [50, 120]
+            })
+
+    def __init__(self, observation_type : str, 
+                 observation_stack : int, 
+                 pre_aug : tuple, 
+                 max_ep_steps : int,
+                 ue4 : str) -> None:
+        
+        AirPointOfView.__init__(self)
+        GymPointOfView.__init__(self, observation_type, observation_stack, pre_aug, 
+                                self.domain, ue4, self.markers, self.target_range)
+        
+        self.max_episode_steps = max_ep_steps
 
