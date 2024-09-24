@@ -29,7 +29,7 @@ class Stack(Space):
                     "rgb" : (3*stack, *pre_aug), 
                     "depth" : (3*stack, *pre_aug),
                     "segmentation" : (3*stack, *pre_aug),
-                    "point_cloud" : (pre_aug[0] * pre_aug[1], 3), 
+                    "point_cloud" : (1024*stack, 3), 
                     "tf" : (7*stack,)
                 }
         
@@ -37,7 +37,7 @@ class Stack(Space):
                     "rgb": Box(low = 0, high = 255, shape= self.__shapes["rgb"], dtype=np.uint8),
                     "depth": Box(low = -2**63, high = 2**63, shape=self.__shapes["depth"], dtype=np.float32),
                     "segmentation": Box(low = 0, high = 255, shape=self.__shapes["segmentation"], dtype=np.uint8),
-                    "point_cloud": Box(low = -2**63, high = 2**63, shape=self.__shapes["point_cloud"], dtype=np.float32),
+                    "point_cloud": Box(low = -2**63, high = 2**63, shape=self.__shapes["point_cloud"], dtype=np.float64),
                     "tf": Box(low = -2**63, high = 2**63, shape=self.__shapes["tf"], dtype=np.float64)
                 }
         
@@ -109,7 +109,7 @@ class Stack(Space):
 class Simulation:
     action_range = DictToClass({
                     "x" : [-60, 60],
-                    "y" : [-155, 155],
+                    "y" : [-60, 60],
                     "z" : [-60, 60],
                     "yaw" : [-45, 45],
                     "gimbal_pitch" : [-45, 45]
@@ -134,7 +134,7 @@ class Simulation:
     
     def __init__(self, observation_type : str, ue4 : str, markers_name : DictToClass):        
         self.__ip = container_ip(ue4)
-        self.__airsim = airsim_launch(self.__ip)
+        self.__airsim = None #airsim_launch(self.__ip)
         self._parse_settings()
         self.__twins = PointOfViewTwins(self.ip, self.vehicle, self.twin, observation_type)
         self.__twins.set_detection(markers_name)
@@ -198,7 +198,7 @@ class Simulation:
             }
         # print(t)
         self.twin.update(t)
-
+import copy
 class GymPointOfView(Simulation, Env):
     task_name = "point-of-view"
     max_episode_steps = 200
@@ -226,7 +226,7 @@ class GymPointOfView(Simulation, Env):
         
         Simulation.__init__(self, observation_type, ue4, markers.name)
         Env.__init__(self)
-        rospy.init_node(f"gym-{self.task_name}")
+        # rospy.init_node(f"gym-{self.task_name}")
 
         self.observation_space = Stack(observation_type, observation_stack, pre_aug)
         self.action_space = Box(low=-1, high=1, shape=(5,), dtype=np.float32)
@@ -235,8 +235,8 @@ class GymPointOfView(Simulation, Env):
         self.original_markers_len = markers.num
         self.markers_len =  markers.num
         self.past_markers_len =  markers.num
-        self.markers_need_to_visit = self.set_markers(markers.name, markers.num)
         self.markers_backup = self.set_markers(markers.name, markers.num)
+        self.markers_need_to_visit = copy.deepcopy(self.markers_backup)
         self.range_to_get_target = markers.range_to_get
         self.target_range = target_range
         self.domain = domain
@@ -265,9 +265,9 @@ class GymPointOfView(Simulation, Env):
         return px, py, pz, yaw, gimbal_pitch
     
     def _get_obs(self):
-        def _pre_aug_obs_shape(img : NDArray, dim : tuple, type= int()):
-            if isinstance(type, float):
-                img_ = img.copy()
+        def _pre_aug_obs_shape(obs : NDArray, dim : tuple, type= 'image'):
+            if type.endswith('depth'):
+                img_ = obs.copy()
                 nan_location = np.isnan(img_)
                 img_[nan_location] = np.nanmax(img_)
                 norm_image =  (img_)*255./5.
@@ -276,8 +276,17 @@ class GymPointOfView(Simulation, Env):
                 norm_image = cv2.cvtColor(norm_image, cv2.COLOR_GRAY2BGR)
                 
                 return cv2.resize(norm_image.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1) 
+            
+            if type.endswith('point_cloud'):
+                centroid = np.mean(obs, axis=0)
+                xy_projection = obs[:, :2]
+                center_index = np.argmin(np.linalg.norm(xy_projection - centroid[:2], axis=1))
+                half = 512
+                obs = obs[center_index - half : center_index + half, :]
+                print(obs.shape, center_index - half, center_index + half)
+                return obs
 
-            return cv2.resize(img.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
+            return cv2.resize(obs.copy(), dim, interpolation = cv2.INTER_AREA).transpose(2, 0, 1)
         
         def _parse_obs(obs : dict):
             _obs = dict()
@@ -286,14 +295,15 @@ class GymPointOfView(Simulation, Env):
                     _obs[k] = v
 
                 elif k.endswith('point_cloud'):
-                    max_points = self.__pre_aug[0] * self.__pre_aug[1]
-                    _obs[k] = np.pad(v, ((0, max_points - v.shape[0]), (0, 0)), mode='constant', constant_values=0)
+                    # max_points = self.__pre_aug[0] * self.__pre_aug[1]
+                    # _obs[k] = np.pad(v, ((0, max_points - v.shape[0]), (0, 0)), mode='constant', constant_values=0)
+                    _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug, 'point_cloud')
 
                 elif k.endswith('depth'):
-                    _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug, float())
+                    _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug, 'depth')
 
                 else:
-                    _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug)
+                   _obs[k] = _pre_aug_obs_shape(v, self.__pre_aug)
             
             return _obs
 
@@ -309,6 +319,7 @@ class GymPointOfView(Simulation, Env):
     def _get_state(self):
         
         viewd_markers, distances = self.client.detections()
+        # print(f'vm {viewd_markers}')
         d = self.client.detection_distance()
         done = False
         reset_pose = False
@@ -333,9 +344,16 @@ class GymPointOfView(Simulation, Env):
         return self._get_obs(), self.markers_len, distance, reset_pose, done, self._get_info()
     
     def _reward(self, markers_len, distance, reset_pose, done):
+        # print(f"original : {self.original_markers_len} {markers_len}")
         # print(f"CURRENT_STEP : {self.current_step} --- MAX_STEPS : {self.max_episode_steps}")
+        alpha = 1e-2
+        beta = 1e-3 * self.original_markers_len
+        gamma = 2 * beta
+        delta = 1e-1
+
+
         if done:
-            return self.original_markers_len, done
+            return delta * self.original_markers_len, done
         
         if self.current_step == self.max_episode_steps -1 :
             return 0, True
@@ -343,14 +361,18 @@ class GymPointOfView(Simulation, Env):
         if reset_pose:
             self.client.go_home()
             if distance:
-                return -10, done
-            return -20, done
+                # print(f'medium : {-10 * alpha}')
+                return -alpha, done
+            # print(f'minimum : {-20 * alpha}')
+            return -beta, done
         
         if markers_len == self.past_markers_len:
             return 0, done
         
         self.past_markers_len = markers_len
-        return self.original_markers_len - markers_len, done
+        # print(f"bigger : {(self.original_markers_len - markers_len) * beta}")
+        
+        return alpha * (self.original_markers_len - markers_len), done
 
     def reset_random(self):
         pose = self.client.random_pose(self.action_range.x, self.action_range.y, 
@@ -365,7 +387,7 @@ class GymPointOfView(Simulation, Env):
         self.current_step = 0
         
         self.client.go_home()
-        self.markers_need_to_visit = self.markers_backup
+        self.markers_need_to_visit = copy.deepcopy(self.markers_backup)
         
         return self._get_obs(), self._get_info()
     
@@ -375,7 +397,7 @@ class GymPointOfView(Simulation, Env):
         observation, len_markers, distance, reset_pose, done, info = self._get_state()
         reward, done = self._reward(len_markers, distance, reset_pose, done)
         self.current_step += 1
-        return observation, reward * 0.01, done, info
+        return observation, reward, done, info
     
     def close(self):
         os.killpg(self.airsim, signal.SIGINT)
@@ -399,11 +421,11 @@ class HybridPointOfView:
 class BasicAirPOV(AirPointOfView, GymPointOfView):
     markers = AirPointOfView.markers.update({
                 "num" : 79,
-                "range_to_get" : [2, 120]
+                "range_to_get" : [2, 80]
             })
     target_range = DictToClass({
-                "x" : [50, 120],
-                "y" : [50, 120]
+                "x" : [2, 80],
+                "y" : [2, 80]
             })
 
     def __init__(self, observation_type : str, 
@@ -421,11 +443,11 @@ class BasicAirPOV(AirPointOfView, GymPointOfView):
 class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
     markers = UnderwaterPointOfView.markers.update({
                 "num" : 73,
-                "range_to_get" : [2, 120]
+                "range_to_get" : [2, 160]
             })
     target_range = DictToClass({
-                "x" : [50, 120],
-                "y" : [50, 120]
+                "x" : [62, 100],
+                "y" : [62, 100]
             })
 
     def __init__(self, observation_type : str, 
@@ -434,7 +456,7 @@ class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
                  max_ep_steps : int,
                  ue4 : str) -> None:
         
-        AirPointOfView.__init__(self)
+        UnderwaterPointOfView.__init__(self)
         GymPointOfView.__init__(self, observation_type, observation_stack, pre_aug, 
                                 self.domain, ue4, self.markers, self.target_range)
         
@@ -443,11 +465,11 @@ class BasicUnderwaterPOV(UnderwaterPointOfView, GymPointOfView):
 class BasicHybridPOV(HybridPointOfView, GymPointOfView):
     markers = HybridPointOfView.markers.update({
                 "num" : (79, 73),
-                "range_to_get" : [2, 120]
+                "range_to_get" : [2, 160]
             })
     target_range = DictToClass({
-                "x" : [50, 120],
-                "y" : [50, 120]
+                "x" : [62, 100],
+                "y" : [62, 100]
             })
 
     def __init__(self, observation_type : str, 
@@ -456,7 +478,7 @@ class BasicHybridPOV(HybridPointOfView, GymPointOfView):
                  max_ep_steps : int,
                  ue4 : str) -> None:
         
-        AirPointOfView.__init__(self)
+        HybridPointOfView.__init__(self)
         GymPointOfView.__init__(self, observation_type, observation_stack, pre_aug, 
                                 self.domain, ue4, self.markers, self.target_range)
         

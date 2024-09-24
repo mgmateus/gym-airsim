@@ -37,7 +37,9 @@
               "Height": 376,
               "FOV_Degrees": 90.0,
               "AutoExposureSpeed": 100,
-              "MoutionBlurAmount": 0                    
+              "MoutionBlurAmount": 0,
+              "PixelAsFloat" : true    
+
             },
             {
               "PublishToRos": 1,

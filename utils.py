@@ -33,8 +33,8 @@ def subprocess_launch(cmd : str):
     Returns:
         Popen: The subprocess contained opened terminal resources.
     """
-    launch = subprocess.Popen(['xterm', '-e', f'bash -c "{cmd}; exec bash"'],
-                        preexec_fn=os.setpgrp)
+    command = ['nohup', 'bash', '-c', f'{cmd}']
+    launch = subprocess.Popen(command, preexec_fn=os.setpgrp, stdout=subprocess.PIPE)
     return launch
 
 def airsim_launch(ip : str):
