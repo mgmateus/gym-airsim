@@ -1,11 +1,11 @@
 {
   "SeeDocsAt": "https://github.com/Microsoft/AirSim/blob/main/docs/settings.md",
   "SettingsVersion": 1.2,
-  "SimMode": "Multirotor",
+  "SimMode": "ComputerVision",
   "ViewMode": "NoDisplay",
   "ClockSpeed": 1,
   "ApiServerPort": 41451,
-  "RecordUIVisible": true,
+  "RecordUIVisible": false,
   "LogMessagesVisible": false,
   "ShowLosDebugLines": false,
   "RpcEnabled": true,
@@ -14,90 +14,33 @@
   "SpeedUnitFactor": 1.0,
   "SpeedUnitLabel": "m/s",
   "Wind": { "X": 0, "Y": 0, "Z": 0 },
-  "Vehicles": {
-    "Hydrone": {
-      "VehicleType": "SimpleFlight",
-      "DefaultVehicleState": "Armed",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "AllowAPIAlways": true,
-      "Sensors": {
-        "Imu" : {
-          "SensorType": 2,
-          "Enabled": true
-        }
+  "CameraDefaults": {
+    "CaptureSettings": [
+      {
+        "ImageType": 0,
+        "Width": 256,
+        "Height": 192,
+        "FOV_Degrees": 90,
+        "AutoExposureSpeed": 100,
+        "MotionBlurAmount": 0
       },
-      "Cameras": {
-        "stereo": {
-          "CaptureSettings": [
-            {
-              "PublishToRos": 1,
-              "ImageType": 0,
-              "Width": 672,
-              "Height": 376,
-              "FOV_Degrees": 90.0,
-              "AutoExposureSpeed": 100,
-              "MoutionBlurAmount": 0,
-              "PixelAsFloat" : true    
-
-            },
-            {
-              "PublishToRos": 1,
-              "ImageType": 1,
-              "Width": 672,
-              "Height": 376,
-              "FOV_Degrees": 90.0,
-              "AutoExposureSpeed": 100,
-              "MoutionBlurAmount": 0
-            },
-            {
-              "PublishToRos": 1,
-              "ImageType": 2,
-              "Width": 672,
-              "Height": 376,
-              "FOV_Degrees": 90,
-              "TargetGamma": 1.5
-            }
-          ],
-          "X": 0.9, "Y": 0, "Z": 0.30,
-          "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-        }
+	  {
+        "ImageType": 1,
+        "Width": 256,
+        "Height": 192,
+        "FOV_Degrees": 90,
+        "AutoExposureSpeed": 100,
+        "MotionBlurAmount": 0
       },
-      "X": 0, "Y": 0, "Z": 0,
-      "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-    },
-    "Twin": {
-      "VehicleType": "SimpleFlight",
-      "DefaultVehicleState": "Armed",
-      "EnableCollisionPassthrogh": false,
-      "EnableCollisions": true,
-      "AllowAPIAlways": true,
-      "Sensors": {
-          "Imu" : {
-          "SensorType": 2,
-          "Enabled": true
-          }
-      },
-      "Cameras": {
-        "twin": {
-          "CaptureSettings": [
-              {
-              "PublishToRos": 1,
-              "ImageType": 0,
-              "Width": 672,
-              "Height": 376,
-              "FOV_Degrees": 90.0,
-              "AutoExposureSpeed": 100,
-              "MoutionBlurAmount": 0                    
-              }
-          ],
-          "X": 0.9, "Y": 0, "Z": 0.30,
-          "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-        }
-      },
-      "X": 0, "Y": -8053.1, "Z": 0, 
-      "Pitch":0.0, "Roll": 0.0, "Yaw": 0.0
-    }
+      {
+        "ImageType": 5,
+        "Width": 256,
+        "Height": 192,
+        "FOV_Degrees": 90,
+        "AutoExposureSpeed": 100,
+        "MotionBlurAmount": 0
+      }
+    ]
   },
   "SubWindows": [
     {"WindowID": 1, "ImageType": 0, "CameraName": "stereo", "Visible": true, "VehicleName" : "Hydrone"},
